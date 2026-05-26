@@ -118,13 +118,6 @@ function EditorialThumbnail({ project }: { project: Project }) {
     setHasError(false);
   }, [project, mode, ytId]);
 
-  const handleImageError = () => {
-    if (!hasError && ytId) {
-      setHasError(true);
-      setImgSrc(`https://img.youtube.com/vi/${ytId}/hqdefault.jpg`);
-    }
-  };
-
   return (
     <img
       src={imgSrc || "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&q=80&w=1200"}
