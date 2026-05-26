@@ -84,6 +84,22 @@ function EditorialThumbnail({ project }: { project: Project }) {
   const [imgSrc, setImgSrc] = useState<string>("");
   const [hasError, setHasError] = useState(false);
 
+  const handleImageError = () => {
+  if (!hasError) {
+    setHasError(true);
+
+    // fallback ưu tiên thumbnail youtube nếu custom ảnh lỗi
+    if (ytId) {
+      setImgSrc(`https://i.ytimg.com/vi/${ytId}/hqdefault.jpg`);
+    } else {
+      // fallback cuối cùng
+      setImgSrc(
+        "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&q=80&w=1200"
+      );
+    }
+  }
+};
+
   useEffect(() => {
     // 1. YouTube mode
     if (mode === "youtube") {
