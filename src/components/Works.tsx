@@ -3,6 +3,8 @@ import { motion } from "motion/react";
 import { Play, Clock, ArrowLeft, Disc, Laptop, Tag, User, Layers, Calendar, ChevronRight } from "lucide-react";
 import { Project } from "../types";
 import { translations } from "../translations";
+import UnifiedVideoPlayer from "./media/UnifiedVideoPlayer";
+import VideoThumbnail from "./media/VideoThumbnail";
 
 // Helper to extract YouTube ID (robustly handles standard, shorts, embed, and 11-char strings)
 function getYouTubeId(url: string | null | undefined): string | null {
@@ -79,58 +81,9 @@ function getEmbedUrl(project: Project): string {
 
 // Strictly Static, High-Contrast Cinematic card thumbnail preview
 function EditorialThumbnail({ project }: { project: Project }) {
-  const mode = (project.thumbnail_mode || "").toLowerCase().trim();
-  const ytId = getYouTubeId(project.youtube_url || "");
-  const [imgSrc, setImgSrc] = useState<string>("");
-  const [hasError, setHasError] = useState(false);
-
-  useEffect(() => {
-    // 1. YouTube mode
-    if (mode === "youtube") {
-      if (ytId) {
-        setImgSrc(`https://img.youtube.com/vi/${ytId}/maxresdefault.jpg`);
-      } else {
-        setImgSrc(project.thumbnail_url || "");
-      }
-    } 
-    // 2. Custom override from Sheets
-    else if (mode === "custom") {
-      setImgSrc(project.thumbnail_url || "");
-    } 
-    // 3. Timestamp mode: load static default cover and only seek when active
-    else if (mode === "timestamp") {
-      if (project.thumbnail_url && !project.thumbnail_url.includes("img.youtube.com") && !project.thumbnail_url.includes("unsplash.com")) {
-        setImgSrc(project.thumbnail_url);
-      } else if (ytId) {
-        setImgSrc(`https://img.youtube.com/vi/${ytId}/maxresdefault.jpg`);
-      } else {
-        setImgSrc(project.thumbnail_url || "");
-      }
-    } 
-    // 4. Fallback default
-    else {
-      if (ytId) {
-        setImgSrc(`https://img.youtube.com/vi/${ytId}/maxresdefault.jpg`);
-      } else {
-        setImgSrc(project.thumbnail_url || "");
-      }
-    }
-    setHasError(false);
-  }, [project, mode, ytId]);
-
-  const handleImageError = () => {
-    if (!hasError && ytId) {
-      setHasError(true);
-      setImgSrc(`https://img.youtube.com/vi/${ytId}/hqdefault.jpg`);
-    }
-  };
-
   return (
-    <img
-      src={imgSrc || "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&q=80&w=1200"}
-      alt={project.title}
-      onError={handleImageError}
-      referrerPolicy="no-referrer"
+    <VideoThumbnail
+      project={project}
       className="absolute inset-0 w-full h-full object-cover opacity-95 group-hover:scale-[1.03] group-hover:opacity-100 transition-all duration-700 select-none pointer-events-none"
     />
   );
@@ -172,22 +125,11 @@ function ShortFormModal({ project, onClose, language }: ShortFormModalProps) {
 
         {/* Video Frame configured to maintain proper aspect ratio */}
         <div className="w-full h-full relative aspect-[9/16] bg-black">
-          {embedUrl ? (
-            <iframe
-              src={embedUrl}
-              title={project.title}
-              allow="autoplay; fullscreen; encrypted-media"
-              allowFullScreen
-              className="absolute inset-0 w-full h-full border-0 z-10"
-            />
-          ) : (
-            <div className="absolute inset-0 flex flex-col items-center justify-center p-6 text-center bg-[#07010C]">
-              <Play className="w-12 h-12 text-[#D9381E] mb-4 animate-pulse animate-duration-1000" />
-              <p className="text-[#F5F5F0] font-mono text-sm tracking-wider uppercase">
-                {isVi ? "Video không khả dụng" : "Video player unavailable"}
-              </p>
-            </div>
-          )}
+          <UnifiedVideoPlayer
+            project={project}
+            autoplay={true}
+            className="absolute inset-0 w-full h-full border-0 z-10"
+          />
         </div>
 
         {/* Minimal Title Bar overlay at bottom under video (YouTube Shorts style but cleaner) */}
@@ -235,11 +177,8 @@ export default function Works({ projects, language, selectedProjectId, setSelect
     ? projects
     : projects.filter((p) => p.category === selectedCategory);
 
-  // Check if active project is 9:16 vertical format (Short-form video)
-  const isShortFormActive = selectedProjectId && activeProject && (activeProject.aspect_ratio === "9:16" || activeProject.aspect_ratio === "9/16");
-
-  // Detail Page Render View (only for standard landscape/wide videos)
-  if (selectedProjectId && activeProject && !isShortFormActive) {
+  // Detail Page Render View (for standard landscape & unified vertical videos)
+  if (selectedProjectId && activeProject) {
     const isVi = language === "vi";
 
     return (
@@ -277,22 +216,11 @@ export default function Works({ projects, language, selectedProjectId, setSelect
 
         {/* 02. Embed Player Surround */}
         <div className="relative aspect-video w-full bg-black rounded-lg border border-white/10 shadow-[0_24px_80px_rgba(0,0,0,0.9)] mb-14 overflow-hidden">
-          {activeProject.youtube_url || activeProject.vimeo_url ? (
-            <iframe
-              src={getEmbedUrl(activeProject)}
-              title={activeProject.title}
-              allow="autoplay; fullscreen; encrypted-media"
-              allowFullScreen
-              className="absolute inset-0 w-full h-full border-0 z-10"
-            />
-          ) : (
-            <div className="absolute inset-0 flex flex-col items-center justify-center bg-zinc-950 p-6 text-center">
-              <Play className="w-12 h-12 text-[#D9381E] stroke-[1.5] mb-4 animate-pulse" />
-              <p className="text-[#F5F5F0] font-mono text-sm tracking-wider uppercase">
-                {isVi ? "Video đang cập nhật hoặc liên kết không có sẵn" : "Video player link unavailable"}
-              </p>
-            </div>
-          )}
+          <UnifiedVideoPlayer
+            project={activeProject}
+            autoplay={true}
+            className="absolute inset-0 w-full h-full border-0 z-10"
+          />
         </div>
 
         {/* 03. Curated Case Study Modules (Project Context, Creative Goal, Editing Focus, Deliverables) */}
@@ -625,17 +553,10 @@ export default function Works({ projects, language, selectedProjectId, setSelect
                       ))}
                     </div>
 
-                    {project.aspect_ratio === "9:16" || project.aspect_ratio === "9/16" ? (
-                      <div className="pt-2 flex items-center gap-2 text-xs text-[#D9381E] font-black uppercase tracking-widest group-hover:text-[#FF5A00] transition-colors">
-                        <span>{language === "vi" ? "THƯỞNG THỨC PHIM NGẮN" : "WATCH SHORT-FORM FORMAT"}</span>
-                        <ChevronRight className="w-4 h-4" />
-                      </div>
-                    ) : (
-                      <div className="pt-2 flex items-center gap-2 text-xs text-[#D9381E] font-black uppercase tracking-widest group-hover:text-[#FF5A00] transition-colors">
-                        <span>{language === "vi" ? "XEM CHI TIẾT HỒ SƠ TÁC PHẨM" : "EXPLORE STUDY IN-DEPTH"}</span>
-                        <ChevronRight className="w-4 h-4" />
-                      </div>
-                    )}
+                    <div className="pt-2 flex items-center gap-2 text-xs text-[#D9381E] font-black uppercase tracking-widest group-hover:text-[#FF5A00] transition-colors">
+                      <span>{language === "vi" ? "XEM CHI TIẾT HỒ SƠ TÁC PHẨM" : "EXPLORE STUDY IN-DEPTH"}</span>
+                      <ChevronRight className="w-4 h-4" />
+                    </div>
                   </div>
 
                 </div>
@@ -643,15 +564,6 @@ export default function Works({ projects, language, selectedProjectId, setSelect
             );
           })}
         </div>
-      )}
-
-      {/* Render dedicated high-fidelity overlay player for 9:16 vertical projects */}
-      {isShortFormActive && activeProject && (
-        <ShortFormModal
-          project={activeProject}
-          onClose={() => setSelectedProjectId(null)}
-          language={language}
-        />
       )}
 
     </section>

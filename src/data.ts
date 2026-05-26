@@ -1,11 +1,35 @@
-import { Project, Essay, PhilosophySnippet, WorkflowStep, PricingPlan, Testimonial, FAQ } from "./types";
+import { Project, Essay, PhilosophySnippet, WorkflowStep, PricingPlan, Testimonial, FAQ, HeroContent } from "./types";
 
-// Helper to extract YouTube ID
-export function getYouTubeId(url: string): string | null {
+// Helper to extract YouTube ID (handles standard, shorts, embed, watch?v=, and raw 11-char IDs)
+export function getYouTubeId(url: string | null | undefined): string | null {
   if (!url) return null;
+  const str = String(url).trim();
+
+  // 1. YouTube Shorts Match
+  const shortsMatch = str.match(/\/shorts\/([a-zA-Z0-9_-]{11})/);
+  if (shortsMatch && shortsMatch[1]) {
+    return shortsMatch[1];
+  }
+
+  // 2. Query param or standard match
+  const ytQueryMatch = str.match(/(?:youtube\.com.*(?:\?|&|#)v=|youtu\.be\/|v\/|embed\/)([a-zA-Z0-9_-]{11})/);
+  if (ytQueryMatch && ytQueryMatch[1]) {
+    return ytQueryMatch[1];
+  }
+
+  // 3. Fallback standard match
   const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
-  const match = url.match(regExp);
-  return (match && match[2].length === 11) ? match[2] : null;
+  const match = str.match(regExp);
+  if (match && match[2] && match[2].length === 11) {
+    return match[2];
+  }
+
+  // 4. Raw 11-char ID
+  if (str.length === 11 && !str.includes("/") && !str.includes(".")) {
+    return str;
+  }
+
+  return null;
 }
 
 // Helper to parse format like "1:24" or "0:12" into seconds
@@ -418,10 +442,14 @@ export const DEFAULT_FAQ: FAQ[] = [
   }
 ];
 
-// Helper to parse CSV data safely
+// Helper to parse CSV data safely following RFC 4180 rules
 function parseCSV(csvText: string): any[] {
-  const lines: string[] = [];
-  let currentLine = "";
+  const results: any[] = [];
+  if (!csvText || !csvText.trim()) return results;
+
+  const rows: string[][] = [];
+  let currentRow: string[] = [];
+  let currentCell = "";
   let inQuotes = false;
 
   for (let i = 0; i < csvText.length; i++) {
@@ -429,62 +457,49 @@ function parseCSV(csvText: string): any[] {
     const nextChar = csvText[i + 1];
 
     if (char === '"') {
-      inQuotes = !inQuotes;
-    } else if (char === '\n' && !inQuotes) {
-      lines.push(currentLine);
-      currentLine = "";
-    } else if (char === '\r' && !inQuotes) {
-      if (nextChar === '\n') {
-        lines.push(currentLine);
-        currentLine = "";
-        i++; // skip next char
+      if (inQuotes && nextChar === '"') {
+        // Escaped quote representation: "" inside a quoted string maps to a single quote "
+        currentCell += '"';
+        i++; // skip next quote
       } else {
-        lines.push(currentLine);
-        currentLine = "";
+        // Toggle the quoting state
+        inQuotes = !inQuotes;
       }
+    } else if (char === ',' && !inQuotes) {
+      currentRow.push(currentCell.trim());
+      currentCell = "";
+    } else if ((char === '\r' || char === '\n') && !inQuotes) {
+      if (char === '\r' && nextChar === '\n') {
+        i++; // skip standard CRLF newline pair second character
+      }
+      currentRow.push(currentCell.trim());
+      rows.push(currentRow);
+      currentRow = [];
+      currentCell = "";
     } else {
-      currentLine += char;
+      currentCell += char;
     }
   }
-  if (currentLine) {
-    lines.push(currentLine);
+
+  // Handle final lingering cell and row
+  if (currentCell !== "" || currentRow.length > 0) {
+    currentRow.push(currentCell.trim());
+    rows.push(currentRow);
   }
 
-  if (lines.length < 2) return [];
+  if (rows.length === 0) return results;
 
-  const headers = lines[0].split(",").map(h => h.trim().replace(/^"|"$/g, ''));
-  const results = [];
+  // The first row represents the keys / headers
+  const headers = rows[0].map(h => h.trim().replace(/^"|"$/g, ''));
+  if (headers.length === 0) return results;
 
-  for (let i = 1; i < lines.length; i++) {
-    const line = lines[i];
-    if (!line.trim()) continue;
+  for (let i = 1; i < rows.length; i++) {
+    const row = rows[i];
+    if (row.length === 0 || (row.length === 1 && !row[0])) continue;
 
-    const row: string[] = [];
-    let currentCell = "";
-    let cellInQuotes = false;
-
-    for (let j = 0; j < line.length; j++) {
-      const c = line[j];
-      if (c === '"') {
-        cellInQuotes = !cellInQuotes;
-      } else if (c === ',' && !cellInQuotes) {
-        row.push(currentCell.trim().replace(/^"|"$/g, ''));
-        currentCell = "";
-      } else {
-        currentCell += c;
-      }
-    }
-    row.push(currentCell.trim().replace(/^"|"$/g, ''));
-
-    const obj: any = {};
+    const obj: Record<string, string> = {};
     headers.forEach((header, index) => {
-      let val = row[index] || "";
-      // Handle array split if header is 'tags' or 'features'
-      if (header === 'tags' || header === 'features') {
-        obj[header] = val ? val.split(";").map(t => t.trim()) : [];
-      } else {
-        obj[header] = val;
-      }
+      obj[header] = row[index] !== undefined ? row[index] : "";
     });
     results.push(obj);
   }
@@ -560,16 +575,19 @@ function getRowValue(row: any, key: string): string {
   if (row[key] !== undefined && row[key] !== null) {
     return String(row[key]).trim();
   }
-  const lowerKey = key.toLowerCase();
+  
+  const normalize = (s: string) => s.toLowerCase().replace(/[\s_-]/g, "");
+  const targetKeyNormalized = normalize(key);
+  
   for (const k of Object.keys(row)) {
-    if (k.toLowerCase() === lowerKey) {
+    if (normalize(k) === targetKeyNormalized) {
       return String(row[k]).trim();
     }
   }
   return "";
 }
 
-// Map parsed tab records into verified Projects array with error resilience and bilingual support
+// Map parsed tab records into verified Projects array with error resilience and strict bilingual support
 export function parseProjects(rows: any[], language: "en" | "vi"): Project[] {
   const fallbacks = [
     "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&q=80&w=1200",
@@ -579,92 +597,92 @@ export function parseProjects(rows: any[], language: "en" | "vi"): Project[] {
   ];
 
   return rows
-    .filter((row) => {
-      const slug = (getRowValue(row, "slug") || getRowValue(row, "id") || "").trim();
-      const titleVi = (getRowValue(row, "title_vi") || "").trim();
-      const titleEn = (getRowValue(row, "title_en") || "").trim();
-      if (!slug && !titleVi && !titleEn) return false;
+    .map((row, idx) => {
+      // Create explicit header-based mapping structure using normalized case-insensitive keys
+      const item = {
+        slug: (getRowValue(row, "slug") || getRowValue(row, "id") || "").trim(),
+        published: getRowValue(row, "published").trim(),
+        featured: getRowValue(row, "featured").trim(),
+        title_vi: getRowValue(row, "title_vi").trim(),
+        title_en: getRowValue(row, "title_en").trim(),
+        year: getRowValue(row, "year").trim(),
+        category: getRowValue(row, "category").trim(),
+        tags: getRowValue(row, "tags").trim(),
+        client: getRowValue(row, "client").trim(),
+        platform: getRowValue(row, "platform").trim(),
+        youtube_url: (getRowValue(row, "youtube_url") || getRowValue(row, "youtubeurl") || "").trim(),
+        vimeo_url: (getRowValue(row, "vimeo_url") || getRowValue(row, "vimeourl") || "").trim(),
+        thumbnail_mode: getRowValue(row, "thumbnail_mode").trim(),
+        thumbnail_url: (getRowValue(row, "thumbnail_url") || getRowValue(row, "thumbnailurl") || "").trim(),
+        thumbnail_time: getRowValue(row, "thumbnail_time").trim(),
+        runtime: (getRowValue(row, "runtime") || getRowValue(row, "duration") || "").trim(),
+        role_vi: getRowValue(row, "role_vi").trim(),
+        role_en: getRowValue(row, "role_en").trim(),
+        focus_vi: getRowValue(row, "focus_vi").trim(),
+        focus_en: getRowValue(row, "focus_en").trim(),
+        short_desc_vi: getRowValue(row, "short_desc_vi").trim(),
+        short_desc_en: getRowValue(row, "short_desc_en").trim(),
+        project_context_vi: getRowValue(row, "project_context_vi").trim(),
+        project_context_en: getRowValue(row, "project_context_en").trim(),
+        creative_goal_vi: getRowValue(row, "creative_goal_vi").trim(),
+        creative_goal_en: getRowValue(row, "creative_goal_en").trim(),
+        editing_focus_vi: getRowValue(row, "editing_focus_vi").trim(),
+        editing_focus_en: getRowValue(row, "editing_focus_en").trim(),
+        deliverables_vi: getRowValue(row, "deliverables_vi").trim(),
+        deliverables_en: getRowValue(row, "deliverables_en").trim(),
+        color_pipeline: (getRowValue(row, "color_pipeline") || getRowValue(row, "colorpipeline") || "").trim(),
+        aspect_ratio: (getRowValue(row, "aspect_ratio") || getRowValue(row, "aspectratio") || "").trim(),
+        credits: getRowValue(row, "credits").trim(),
+        sort_order: getRowValue(row, "sort_order").trim(),
+      };
 
-      // Handle published column configuration
-      const publishedVal = getRowValue(row, "published").toLowerCase();
-      if (publishedVal === "false" || publishedVal === "no" || publishedVal === "0" || publishedVal === "hidden" || publishedVal === "draft") {
+      return { item, idx };
+    })
+    .filter(({ item }) => {
+      // Clean invalid raw entries
+      if (!item.slug && !item.title_vi && !item.title_en) return false;
+
+      // Filter out draft status
+      const pub = item.published.toLowerCase();
+      if (pub === "false" || pub === "no" || pub === "0" || pub === "hidden" || pub === "draft") {
         return false;
       }
       return true;
     })
-    .map((row, idx) => {
-      const slug = (getRowValue(row, "slug") || getRowValue(row, "id") || `project-${idx}`).trim();
+    .map(({ item, idx }) => {
+      const slug = item.slug || `project-${idx}`;
       const published = true;
-      const featuredVal = getRowValue(row, "featured").toLowerCase();
+      const featuredVal = item.featured.toLowerCase();
       const featured = featuredVal === "true" || featuredVal === "yes" || featuredVal === "1" || featuredVal === "featured";
 
-      const title_vi = getRowValue(row, "title_vi") || getRowValue(row, "title") || "";
-      const title_en = getRowValue(row, "title_en") || getRowValue(row, "title") || "";
+      const sort_order = parseInt(item.sort_order || "100", 10) || 100;
 
-      const year = getRowValue(row, "year") || "";
-      const category = getRowValue(row, "category") || "";
-      
-      const rawTags = getRowValue(row, "tags");
+      const rawTags = item.tags;
       const tags = rawTags
         ? rawTags.split(/[;,]/).map((t: string) => t.trim()).filter(Boolean)
         : [];
 
-      const client = getRowValue(row, "client") || "";
-      const platform = getRowValue(row, "platform") || "";
-      const youtube_url = getRowValue(row, "youtube_url") || getRowValue(row, "youtubeurl") || "";
-      const vimeo_url = getRowValue(row, "vimeo_url") || getRowValue(row, "vimeourl") || "";
-      const thumbnail_mode = getRowValue(row, "thumbnail_mode") || "";
-      const thumbnail_url = getRowValue(row, "thumbnail_url") || "";
-      const thumbnail_time = getRowValue(row, "thumbnail_time") || "";
-      const runtime = getRowValue(row, "runtime") || getRowValue(row, "duration") || "";
-
-      const role_vi = getRowValue(row, "role_vi") || getRowValue(row, "role") || "";
-      const role_en = getRowValue(row, "role_en") || getRowValue(row, "role") || "";
-
-      const focus_vi = getRowValue(row, "focus_vi") || getRowValue(row, "feeling") || "";
-      const focus_en = getRowValue(row, "focus_en") || getRowValue(row, "feeling") || "";
-
-      const short_desc_vi = getRowValue(row, "short_desc_vi") || getRowValue(row, "description") || "";
-      const short_desc_en = getRowValue(row, "short_desc_en") || getRowValue(row, "description") || "";
-
-      const project_context_vi = getRowValue(row, "project_context_vi") || "";
-      const project_context_en = getRowValue(row, "project_context_en") || "";
-
-      const creative_goal_vi = getRowValue(row, "creative_goal_vi") || "";
-      const creative_goal_en = getRowValue(row, "creative_goal_en") || "";
-
-      const editing_focus_vi = getRowValue(row, "editing_focus_vi") || "";
-      const editing_focus_en = getRowValue(row, "editing_focus_en") || "";
-
-      const deliverables_vi = getRowValue(row, "deliverables_vi") || "";
-      const deliverables_en = getRowValue(row, "deliverables_en") || "";
-
-      const color_pipeline = getRowValue(row, "color_pipeline") || "";
-      const aspect_ratio = getRowValue(row, "aspect_ratio") || "";
-      const credits = getRowValue(row, "credits") || "";
-      const sort_order = parseInt(getRowValue(row, "sort_order") || "100", 10) || 100;
-
-      // Local translation resolution helper: prior Vietnamese first globally
+      // Unified Language Mapping strictly avoiding mixing field values between languages
       const isVi = language === "vi";
-      const title = isVi ? title_vi : title_en;
-      const role = isVi ? role_vi : role_en;
-      const focus = isVi ? focus_vi : focus_en;
-      const short_desc = (isVi ? short_desc_vi : short_desc_en) || short_desc_vi || short_desc_en;
-      const project_context = (isVi ? project_context_vi : project_context_en) || project_context_vi || project_context_en;
-      const creative_goal = (isVi ? creative_goal_vi : creative_goal_en) || creative_goal_vi || creative_goal_en;
-      const editing_focus = (isVi ? editing_focus_vi : editing_focus_en) || editing_focus_vi || editing_focus_en;
-      const deliverables = (isVi ? deliverables_vi : deliverables_en) || deliverables_vi || deliverables_en;
+      const title = isVi ? item.title_vi : item.title_en;
+      const role = isVi ? item.role_vi : item.role_en;
+      const focus = isVi ? item.focus_vi : item.focus_en;
+      const short_desc = isVi ? item.short_desc_vi : item.short_desc_en;
+      const project_context = isVi ? item.project_context_vi : item.project_context_en;
+      const creative_goal = isVi ? item.creative_goal_vi : item.creative_goal_en;
+      const editing_focus = isVi ? item.editing_focus_vi : item.editing_focus_en;
+      const deliverables = isVi ? item.deliverables_vi : item.deliverables_en;
 
       // Extract resolved thumbnail URL based on the selected mode:
-      let finalThumbnail = thumbnail_url;
-      const mode = thumbnail_mode.toLowerCase().trim();
-      const ytId = getYouTubeId(youtube_url);
+      let finalThumbnail = item.thumbnail_url;
+      const mode = item.thumbnail_mode.toLowerCase().trim();
+      const ytId = getYouTubeId(item.youtube_url);
       
       if (mode === "youtube" && ytId) {
         finalThumbnail = `https://img.youtube.com/vi/${ytId}/maxresdefault.jpg`;
       } else if (mode === "timestamp") {
         if (ytId) {
-          const seconds = parseTimeToSeconds(thumbnail_time);
+          const seconds = parseTimeToSeconds(item.thumbnail_time);
           if (seconds <= 30) {
             finalThumbnail = `https://img.youtube.com/vi/${ytId}/1.jpg`;
           } else if (seconds <= 90) {
@@ -673,19 +691,19 @@ export function parseProjects(rows: any[], language: "en" | "vi"): Project[] {
             finalThumbnail = `https://img.youtube.com/vi/${ytId}/3.jpg`;
           }
         } else {
-          finalThumbnail = thumbnail_url;
+          finalThumbnail = item.thumbnail_url;
         }
       } else if (mode === "custom") {
-        finalThumbnail = thumbnail_url;
+        finalThumbnail = item.thumbnail_url;
       } else {
         if (ytId) {
           finalThumbnail = `https://img.youtube.com/vi/${ytId}/maxresdefault.jpg`;
         } else {
-          finalThumbnail = thumbnail_url;
+          finalThumbnail = item.thumbnail_url;
         }
       }
 
-      // Default Unsplash fallbacks if somehow it remains empty:
+      // Default Unsplash fallbacks if somehow still empty:
       if (!finalThumbnail) {
         finalThumbnail = fallbacks[idx % fallbacks.length];
       }
@@ -695,36 +713,36 @@ export function parseProjects(rows: any[], language: "en" | "vi"): Project[] {
         slug,
         published,
         featured,
-        title_vi,
-        title_en,
-        year,
-        category,
+        title_vi: item.title_vi,
+        title_en: item.title_en,
+        year: item.year,
+        category: item.category,
         tags,
-        client,
-        platform,
-        youtube_url,
-        vimeo_url,
-        thumbnail_mode,
+        client: item.client,
+        platform: item.platform,
+        youtube_url: item.youtube_url,
+        vimeo_url: item.vimeo_url,
+        thumbnail_mode: item.thumbnail_mode,
         thumbnail_url: finalThumbnail,
-        thumbnail_time,
-        runtime,
-        role_vi,
-        role_en,
-        focus_vi,
-        focus_en,
-        short_desc_vi,
-        short_desc_en,
-        project_context_vi,
-        project_context_en,
-        creative_goal_vi,
-        creative_goal_en,
-        editing_focus_vi,
-        editing_focus_en,
-        deliverables_vi,
-        deliverables_en,
-        color_pipeline,
-        aspect_ratio,
-        credits,
+        thumbnail_time: item.thumbnail_time,
+        runtime: item.runtime,
+        role_vi: item.role_vi,
+        role_en: item.role_en,
+        focus_vi: item.focus_vi,
+        focus_en: item.focus_en,
+        short_desc_vi: item.short_desc_vi,
+        short_desc_en: item.short_desc_en,
+        project_context_vi: item.project_context_vi,
+        project_context_en: item.project_context_en,
+        creative_goal_vi: item.creative_goal_vi,
+        creative_goal_en: item.creative_goal_en,
+        editing_focus_vi: item.editing_focus_vi,
+        editing_focus_en: item.editing_focus_en,
+        deliverables_vi: item.deliverables_vi,
+        deliverables_en: item.deliverables_en,
+        color_pipeline: item.color_pipeline,
+        aspect_ratio: item.aspect_ratio,
+        credits: item.credits,
         sort_order,
         title,
         role,
@@ -826,6 +844,7 @@ export interface SheetsData {
   faq?: any[];
   workflow?: any[];
   labels?: any[];
+  heroContent?: any[];
 }
 
 // Core multi-tab fetcher fetching single CSV tab via Google Visualization Query API
@@ -886,5 +905,33 @@ export async function fetchSpreadsheetTabs(spreadsheetUrl: string): Promise<Shee
     console.warn("Could not fetch 'labels' tab, falling back to local defaults:", err);
   }
 
+  // Fetch hero_content tab
+  try {
+    const raw = await fetchTabCSV(spreadsheetId, "hero_content");
+    if (raw && raw.length > 0) result.heroContent = raw;
+  } catch (err) {
+    console.warn("Could not fetch 'hero_content' tab, falling back to local defaults:", err);
+  }
+
   return result;
+}
+
+export function parseHeroContent(rows: any[]): HeroContent {
+  const content: HeroContent = {};
+  if (!rows || rows.length === 0) return content;
+
+  for (const row of rows) {
+    const key = (row.key || row.Key || row.id || row.ID || "").trim();
+    if (!key) continue;
+
+    const viVal = (row.vi !== undefined && row.vi !== null ? String(row.vi) : (row.text_vi || row.label_vi || "")).trim();
+    const enVal = (row.en !== undefined && row.en !== null ? String(row.en) : (row.text_en || row.label_en || "")).trim();
+
+    content[key] = {
+      vi: viVal,
+      en: enVal
+    };
+  }
+
+  return content;
 }

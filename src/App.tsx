@@ -21,8 +21,9 @@ import {
   parsePricing,
   parseFaq,
   parseWorkflow,
+  parseHeroContent,
 } from "./data";
-import { Project, Essay, PhilosophySnippet, WorkflowStep, PricingPlan, FAQ, Testimonial } from "./types";
+import { Project, Essay, PhilosophySnippet, WorkflowStep, PricingPlan, FAQ, Testimonial, HeroContent } from "./types";
 import { Film, Settings, Compass, Sliders, CheckSquare, Sparkles } from "lucide-react";
 import { translations, updateTranslationsWithLabels, resetTranslations } from "./translations";
 
@@ -39,6 +40,7 @@ export default function App() {
   const [faqs, setFaqs] = useState<FAQ[]>(DEFAULT_FAQ);
   const [workflow, setWorkflow] = useState<WorkflowStep[]>(DEFAULT_WORKFLOW);
   const [selectedProjectId, setSelectedProjectId] = useState<string | null>(null);
+  const [heroContent, setHeroContent] = useState<HeroContent | null>(null);
 
   // Cache tab raw records to support dynamic instant language switching
   const [rawSheetsData, setRawSheetsData] = useState<any>(null);
@@ -72,6 +74,11 @@ export default function App() {
       if (rawSheetsData.workflow) {
         setWorkflow(parseWorkflow(rawSheetsData.workflow, language));
       }
+      if (rawSheetsData.heroContent) {
+        setHeroContent(parseHeroContent(rawSheetsData.heroContent));
+      } else {
+        setHeroContent(null);
+      }
     } else {
       // Clean fallback to defaults when sheet is unlinked
       resetTranslations();
@@ -79,6 +86,7 @@ export default function App() {
       setPricing(DEFAULT_PRICING);
       setFaqs(DEFAULT_FAQ);
       setWorkflow(DEFAULT_WORKFLOW);
+      setHeroContent(null);
     }
   }, [rawSheetsData, language]);
 
@@ -147,6 +155,7 @@ export default function App() {
                 }}
                 philosophySnippet={randomPhilosophy}
                 language={language}
+                heroContent={heroContent}
               />
             )}
             {activeTab === "works" && (

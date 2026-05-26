@@ -102,3 +102,11 @@ export interface SheetConfig {
   isPublishedCsv: boolean;
   publishedUrl?: string;
 }
+
+export interface HeroContent {
+  [key: string]: {
+    vi: string;
+    en: string;
+  };
+}
+
