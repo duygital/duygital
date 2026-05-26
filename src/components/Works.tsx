@@ -88,7 +88,7 @@ function EditorialThumbnail({ project }: { project: Project }) {
     // 1. YouTube mode
     if (mode === "youtube") {
       if (ytId) {
-        setImgSrc(`https://img.youtube.com/vi/${ytId}/maxresdefault.jpg`);
+        setImgSrc(`https://i.ytimg.com/vi/${ytId}/hqdefault.jpg`);
       } else {
         setImgSrc(project.thumbnail_url || "");
       }
@@ -102,7 +102,7 @@ function EditorialThumbnail({ project }: { project: Project }) {
       if (project.thumbnail_url && !project.thumbnail_url.includes("img.youtube.com") && !project.thumbnail_url.includes("unsplash.com")) {
         setImgSrc(project.thumbnail_url);
       } else if (ytId) {
-        setImgSrc(`https://img.youtube.com/vi/${ytId}/maxresdefault.jpg`);
+        setImgSrc(`https://i.ytimg.com/vi/${ytId}/hqdefault.jpg`);
       } else {
         setImgSrc(project.thumbnail_url || "");
       }
@@ -110,7 +110,7 @@ function EditorialThumbnail({ project }: { project: Project }) {
     // 4. Fallback default
     else {
       if (ytId) {
-        setImgSrc(`https://img.youtube.com/vi/${ytId}/maxresdefault.jpg`);
+        setImgSrc(`https://i.ytimg.com/vi/${ytId}/hqdefault.jpg`);
       } else {
         setImgSrc(project.thumbnail_url || "");
       }
