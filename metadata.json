@@ -1,0 +1,6 @@
+{
+  "name": "Duygital",
+  "description": "Grounded, pacing-focused video production and editing portfolio for Duygital — structured, thoughtful visual storytelling.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

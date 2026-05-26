@@ -1,0 +1,67 @@
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500&family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --color-bg: #0A0314;
+  --color-brand: #D9381E;
+  --color-motion: #FF5A00;
+  --color-paper: #F5F5F0;
+  --color-brand-dim: #3a0d07;
+  
+  --font-serif: "Cormorant Garamond", Georgia, serif;
+  --font-sans: "Inter", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", monospace;
+  --font-display: "Space Grotesk", sans-serif;
+}
+
+/* Custom styles for high-end cinematic editorial looks */
+html, body {
+  background-color: #0A0314;
+  color: #F5F5F0;
+  font-family: var(--font-sans);
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Scrollbar rules */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #05010B;
+}
+::-webkit-scrollbar-thumb {
+  background: #D9381E;
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #FF5A00;
+}
+
+/* Cleared noise grain for high-end solid visual confidence */
+.scannable-grain {
+  display: none;
+}
+
+/* Clean atmospheric backdrop */
+.cinematic-vignette {
+  background: radial-gradient(circle, rgba(26,13,34,0.1) 0%, rgba(12,5,16,0.95) 100%);
+}
+
+/* Editorial custom layout spacing classes */
+.editorial-lead {
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 5vw, 4.5rem);
+  line-height: 1.1;
+  font-weight: 400;
+  letter-spacing: -0.02em;
+}
+
+.interactive-timecode {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.2em;
+  color: var(--color-motion);
+  text-transform: uppercase;
+}
+
