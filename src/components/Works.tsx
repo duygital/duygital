@@ -62,7 +62,7 @@ function getEmbedUrl(project: Project): string {
   const seconds = parseTimeToSeconds(project.thumbnail_time);
 
   if (ytId) {
-    let url = `https://www.youtube.com/embed/${ytId}?autoplay=1&mute=0&rel=0&modestbranding=1&controls=1&showinfo=0`;
+    let url = `https://www.youtube.com/embed/${ytId}?autoplay=0&mute=1&rel=0&modestbranding=1&controls=1&showinfo=0`;
     if (seconds > 0) {
       url += `&start=${seconds}`;
     }
@@ -164,14 +164,14 @@ function ShortFormModal({ project, onClose, language }: ShortFormModalProps) {
         </div>
 
         {/* Video Frame configured to maintain proper aspect ratio */}
-        <div className="w-full h-full relative aspect-[9/16] bg-black">
+        <div className="w-full h-full flex items-center justify-center bg-black">
           {embedUrl ? (
             <iframe
               src={embedUrl}
               title={project.title}
               allow="autoplay; fullscreen; encrypted-media"
               allowFullScreen
-              className="absolute inset-0 w-full h-full border-0 z-10"
+              className="w-full h-full md:w-[420px] md:h-[748px] border-0 z-10"
             />
           ) : (
             <div className="absolute inset-0 flex flex-col items-center justify-center p-6 text-center bg-[#07010C]">
@@ -276,7 +276,7 @@ export default function Works({ projects, language, selectedProjectId, setSelect
               title={activeProject.title}
               allow="autoplay; fullscreen; encrypted-media"
               allowFullScreen
-              className="absolute inset-0 w-full h-full border-0 z-10"
+              className="w-full h-full md:w-[420px] md:h-[748px] border-0 z-10"
             />
           ) : (
             <div className="absolute inset-0 flex flex-col items-center justify-center bg-zinc-950 p-6 text-center">
