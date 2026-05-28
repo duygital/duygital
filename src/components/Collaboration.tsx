@@ -505,10 +505,10 @@ export default function Collaboration({
         <span className="font-mono text-sm text-brand tracking-[0.25em] block mb-3 font-extrabold uppercase">
           {dict.intro.tag}
         </span>
-        <h2 className="font-display text-4xl md:text-5xl font-semibold text-paper uppercase leading-tight tracking-tight">
+        <h2 className="font-serif text-3xl md:text-5xl font-light italic text-paper uppercase leading-tight tracking-normal">
           {dict.intro.title}
         </h2>
-        <p className="mt-6 font-sans text-base md:text-lg text-paper/95 leading-relaxed max-w-5xl font-normal">
+        <p className="mt-6 font-sans text-base md:text-lg text-paper/95 leading-relaxed max-w-5xl font-light">
           {dict.intro.desc}
         </p>
       </div>
@@ -516,7 +516,7 @@ export default function Collaboration({
       {/* SECTION B: LEVEL SYSTEM - Creative Presentation */}
       <div className="mb-28 text-left">
         <div className="mb-10 max-w-4xl">
-          <span className="font-mono text-sm text-brand tracking-[0.2em] block font-extrabold uppercase mb-2">
+          <span className="font-mono text-sm text-brand tracking-[0.24em] block font-black uppercase mb-2">
             SECTION A // {dict.levels.sectionTitle}
           </span>
           <p className="font-sans text-sm md:text-base text-paper/95 leading-relaxed font-normal">
@@ -656,10 +656,10 @@ export default function Collaboration({
 
       {/* RETAINER BRIEF AT BOTTOM OF SECTION B */}
       <div className="mb-24 text-left border-l-2 border-brand pl-6 max-w-4xl">
-        <h4 className="font-display font-bold text-paper text-xl uppercase tracking-tight mb-3">
+        <h4 className="font-serif text-xl md:text-2xl font-light italic text-paper uppercase tracking-normal mb-3">
           {dict.pricingHeader.ratesTitle}
         </h4>
-        <p className="font-sans text-sm md:text-base text-paper/95 leading-relaxed font-normal">
+        <p className="font-sans text-sm md:text-base text-paper/95 leading-relaxed font-light">
           {dict.pricingHeader.ratesSub}
         </p>
       </div>
@@ -669,17 +669,17 @@ export default function Collaboration({
         
         {pricing && pricing.length > 0 ? (
           <div>
-            <span className="font-mono text-sm text-brand tracking-[0.2em] block font-extrabold uppercase mb-8">
+            <span className="font-mono text-sm text-brand tracking-[0.24em] block font-black uppercase mb-8">
               ACTIVE PLANS // DYNAMIC PORTFOLIO ARCHITECTURE
             </span>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               {pricing.map((plan: any, i: number) => (
                 <div key={plan.id || i} className="border border-paper/20 bg-paper/[0.02]/60 p-8 md:p-10 relative flex flex-col justify-between transition-all hover:border-brand/45 hover:bg-brand/[0.015] rounded shadow-[0_4px_25px_rgba(0,0,0,0.4)]">
                   <div>
-                    <span className="font-mono text-xs text-brand font-extrabold tracking-widest block uppercase mb-2">
+                    <span className="font-mono text-xs text-brand font-black tracking-widest block uppercase mb-2">
                       PLAN // 0{i + 1}
                     </span>
-                    <h4 className="font-display font-bold text-2xl text-paper uppercase tracking-wider pb-3 border-b border-paper/15 mb-4 leading-tight">
+                    <h4 className="font-serif text-xl md:text-2xl font-light italic text-paper uppercase tracking-normal pb-3 border-b border-paper/15 mb-4 leading-tight">
                       {plan.name}
                     </h4>
                     {plan.subtitle && (
@@ -724,10 +724,10 @@ export default function Collaboration({
             {/* SHORT-FORM PRICING PLAN */}
             <div>
               <div className="mb-6">
-                <span className="font-mono text-sm text-brand tracking-[0.2em] block font-extrabold uppercase mb-2">
+                <span className="font-mono text-sm text-brand tracking-[0.24em] block font-black uppercase mb-2">
                   SECTION B // {dict.pricingHeader.shortTitle}
                 </span>
-                <p className="text-sm md:text-base font-sans text-paper/95 font-normal max-w-3xl leading-relaxed">
+                <p className="text-sm md:text-base font-sans text-paper/95 font-light max-w-3xl leading-relaxed">
                   {dict.pricingHeader.shortSub}
                 </p>
                 <div className="mt-3 text-xs md:text-sm font-mono bg-brand/10 text-brand px-4 py-2 inline-block rounded-none border border-brand/30 font-extrabold uppercase tracking-wide">
@@ -748,7 +748,7 @@ export default function Collaboration({
                 {/* List Rows */}
                 {dict.shortRates.map((rate, i) => (
                   <div key={i} className="grid grid-cols-1 md:grid-cols-12 gap-4 md:gap-8 py-6 items-start hover:bg-paper/[0.02] transition-all">
-                    <div className="col-span-12 md:col-span-3 font-display font-bold text-lg text-paper uppercase tracking-wider">
+                    <div className="col-span-12 md:col-span-3 font-serif font-light italic text-lg text-paper uppercase tracking-normal">
                       {rate.title}
                     </div>
                     <div className="col-span-12 md:col-span-5 font-sans text-sm text-paper/95 leading-relaxed font-normal">
@@ -776,10 +776,10 @@ export default function Collaboration({
             {/* LONG-FORM PRICING PLAN */}
             <div>
               <div className="mb-6">
-                <span className="font-mono text-sm text-brand tracking-[0.2em] block font-extrabold uppercase mb-2">
+                <span className="font-mono text-sm text-brand tracking-[0.24em] block font-black uppercase mb-2">
                   SECTION C // {dict.pricingHeader.longTitle}
                 </span>
-                <p className="text-sm md:text-base font-sans text-paper/95 font-normal max-w-3xl leading-relaxed">
+                <p className="text-sm md:text-base font-sans text-paper/95 font-light max-w-3xl leading-relaxed">
                   {dict.pricingHeader.longSub}
                 </p>
                 <div className="mt-3 text-xs md:text-sm font-mono bg-brand/10 text-brand px-4 py-2 inline-block rounded-none border border-brand/30 font-extrabold uppercase tracking-wide">
@@ -800,7 +800,7 @@ export default function Collaboration({
                 {/* List Rows */}
                 {dict.longRates.map((rate, i) => (
                   <div key={i} className="grid grid-cols-1 md:grid-cols-12 gap-4 md:gap-8 py-6 items-start hover:bg-paper/[0.02] transition-all">
-                    <div className="col-span-12 md:col-span-3 font-display font-bold text-lg text-paper uppercase tracking-wider">
+                    <div className="col-span-12 md:col-span-3 font-serif font-light italic text-lg text-paper uppercase tracking-normal">
                       {rate.title}
                     </div>
                     <div className="col-span-12 md:col-span-5 font-sans text-sm text-paper/95 leading-relaxed font-normal">
@@ -866,10 +866,10 @@ export default function Collaboration({
       {/* SECTION F: ADD-ONS */}
       <div className="mb-28 border-t border-paper/10 pt-16 text-left">
         <div className="mb-12 max-w-2xl">
-          <span className="font-mono text-sm text-brand tracking-[0.2em] block font-extrabold uppercase mb-2">
-            SECTION E // {dict.addons.title}
+          <span className="font-mono text-sm text-brand tracking-[0.24em] block font-black uppercase mb-2">
+            SECTION D // {dict.addons.title}
           </span>
-          <p className="font-sans text-sm text-paper/95 font-normal leading-relaxed">
+          <p className="font-sans text-sm text-paper/95 font-light leading-relaxed">
             {dict.addons.sub}
           </p>
         </div>
@@ -877,12 +877,12 @@ export default function Collaboration({
         {/* Modular Grid without glowing SaaS pricing items */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           {dict.addons.items.map((addon, i) => (
-            <div key={i} className="border border-paper/20 bg-paper/[0.02]/60 p-8 md:p-10 relative flex flex-col justify-between transition-all hover:border-brand/40 hover:bg-brand/[0.02]">
+            <div key={i} className="border border-paper/20 bg-paper/[0.02]/60 p-8 md:p-10 relative flex flex-col justify-between transition-all hover:border-brand/40 hover:bg-brand/[0.02] rounded shadow-md">
               <div>
-                <span className="font-mono text-xs text-brand font-extrabold tracking-widest block uppercase mb-2">
+                <span className="font-mono text-xs text-brand font-black tracking-widest block uppercase mb-2">
                   OPTIONAL // 0{i + 1}
                 </span>
-                <h4 className="font-display font-bold text-base md:text-lg text-paper uppercase tracking-wider pb-3 border-b border-paper/15 mb-4">
+                <h4 className="font-serif text-lg font-light italic text-paper uppercase tracking-normal pb-3 border-b border-paper/15 mb-4">
                   {addon.title}
                 </h4>
                 <p className="text-xs md:text-sm text-paper leading-relaxed font-normal">
@@ -902,10 +902,13 @@ export default function Collaboration({
       {/* SECTION G: FAQ ACCORDION SHEET */}
       <div className="border-t border-paper/15 pt-16 text-left">
         <div className="mb-12">
-          <span className="font-mono text-sm text-brand tracking-[0.2em] block font-extrabold uppercase mb-2">
-            SECTION F // {dict.faq.title}
+          <span className="font-mono text-xs text-[#D9381E] tracking-[0.24em] block font-black uppercase mb-2">
+            CHAPTER VII
           </span>
-          <p className="text-sm font-mono text-brand font-extrabold uppercase tracking-widest">
+          <h2 className="font-serif text-3xl md:text-5xl font-light italic text-[#F5F5F0] uppercase leading-tight tracking-normal mb-2">
+            {dict.faq.title}
+          </h2>
+          <p className="text-xs font-mono text-[#D9381E] font-black uppercase tracking-widest mt-1">
             {dict.faq.tag}
           </p>
         </div>
@@ -920,14 +923,17 @@ export default function Collaboration({
                   className="w-full flex justify-between items-center text-left py-4 cursor-pointer group border-0 bg-transparent"
                   id={`faq-btn-${i}`}
                 >
-                  <p className="font-display font-bold text-base md:text-lg text-paper group-hover:text-brand transition-colors duration-200 uppercase tracking-wide">
+                  <p className="font-serif text-base md:text-lg text-paper group-hover:text-brand transition-colors duration-200 uppercase tracking-normal font-light italic pr-4">
                     {item.question}
                   </p>
-                  <ChevronDown
-                    className={`w-5 h-5 text-brand shrink-0 transition-transform duration-300 ${
-                      isOpen ? "rotate-180" : ""
-                    }`}
-                  />
+                  <div className="flex items-center gap-2 text-brand font-mono text-[10px] tracking-widest uppercase font-extrabold select-none shrink-0 border border-brand/20 bg-brand/5 px-2.5 py-1">
+                    <span>{isOpen ? "[ - LOCK ]" : "[ + UNFOLD ]"}</span>
+                    <ChevronDown
+                      className={`w-3.5 h-3.5 text-brand transition-transform duration-300 ${
+                        isOpen ? "rotate-180" : ""
+                      }`}
+                    />
+                  </div>
                 </button>
 
                 <AnimatePresence initial={false}>

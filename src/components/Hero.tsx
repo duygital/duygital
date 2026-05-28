@@ -1,7 +1,7 @@
-import { useState, useEffect, useRef } from "react";
-import { motion, AnimatePresence } from "motion/react";
+import { motion } from "motion/react";
+import { Play } from "lucide-react";
 import { PhilosophySnippet, Project, HeroContent } from "../types";
-import AmbientPlayer from "./media/AmbientPlayer";
+import VideoThumbnail from "./media/VideoThumbnail";
 
 interface HeroProps {
   onExploreWorks: () => void;
@@ -42,8 +42,8 @@ const FALLBACK_HERO_CONTENT: Record<string, Record<"vi" | "en", string>> = {
     en: "Duygital",
   },
   hero_cta: {
-    vi: "TIẾN VÀO THƯ VIỆN TÁC PHẨM",
-    en: "ENTER THE SELECTED ARCHIVE",
+    vi: "XEM CÁC TÁC PHẨM TUYỂN CHỌN",
+    en: "VIEW SELECTED WORKS",
   },
   hero_principle_1_title: {
     vi: "01 / NHỊP ĐIỆU DÒNG THỜI GIAN",
@@ -71,19 +71,7 @@ const FALLBACK_HERO_CONTENT: Record<string, Record<"vi" | "en", string>> = {
   }
 };
 
-export default function Hero({
-  onExploreWorks,
-  philosophySnippet,
-  language,
-  projects,
-  onSelectProject,
-  heroContent,
-}: HeroProps) {
-  const [cursorPos, setCursorPos] = useState({ x: 0, y: 0 });
-  const [isHovering, setIsHovering] = useState(false);
-  const [hoverText, setHoverText] = useState("");
-  const heroRef = useRef<HTMLDivElement>(null);
-
+export default function Hero({ onExploreWorks, philosophySnippet, language, projects, onSelectProject, heroContent }: HeroProps) {
   const t = (key: string): string => {
     if (heroContent && heroContent[key]) {
       const val = heroContent[key][language];
@@ -92,216 +80,210 @@ export default function Hero({
     return FALLBACK_HERO_CONTENT[key]?.[language] || "";
   };
 
+  // Dynamic localized version of the central philosophy quote fallback
   const localizedQuote = t("hero_quote") || (language === "en" 
     ? philosophySnippet.quote 
     : "Biên tập không phải là dồn dập kỹ xảo. Nó là nghệ thuật điều tiết khoảng lặng để câu chuyện tự thân cất tiếng.");
 
   const localizedAuthor = t("hero_quote_author") || (language === "en" ? philosophySnippet.author : "Duygital");
 
-  const featuredProject = projects.find((p) => p.featured);
-
-  // Custom Cursor event listener
-  useEffect(() => {
-    const handleMouseMove = (e: MouseEvent) => {
-      if (!isHovering) return;
-      setCursorPos({ x: e.clientX, y: e.clientY });
-    };
-
-    window.addEventListener("mousemove", handleMouseMove);
-    return () => {
-      window.removeEventListener("mousemove", handleMouseMove);
-    };
-  }, [isHovering]);
-
-  const handleMouseEnter = (text: string) => {
-    // Only enable custom floating cursor on non-touch devices
-    if (window.matchMedia("(pointer: coarse)").matches) return;
-    setHoverText(text);
-    setIsHovering(true);
-  };
-
-  const handleMouseLeave = () => {
-    setIsHovering(false);
-  };
-
   return (
-    <div ref={heroRef} className="relative w-full">
-      {/* Absolute Dynamic Custom Pointer Layer following standard Brutal calm styles */}
-      <AnimatePresence>
-        {isHovering && hoverText && (
-          <motion.div
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.8 }}
-            transition={{ type: "spring", stiffness: 400, damping: 28 }}
-            className="fixed pointer-events-none z-[9999] px-4 py-2 bg-text border border-bg text-bg rounded-full shadow-[0_12px_40px_rgba(0,0,0,0.6)] font-mono text-[10px] tracking-[0.25em] font-black uppercase text-center flex items-center justify-center whitespace-nowrap"
-            style={{
-              left: cursorPos.x + 15,
-              top: cursorPos.y + 15,
-            }}
-          >
-            {hoverText}
-          </motion.div>
-        )}
-      </AnimatePresence>
+    <section className="relative min-h-screen pt-36 pb-20 px-6 md:px-12 lg:px-24 flex flex-col items-center justify-start overflow-hidden bg-bg w-full">
+      {/* Background Atmosphere */}
+      <div className="absolute inset-0 cinematic-vignette z-10 pointer-events-none" />
 
-      <section className="relative min-h-screen pt-40 pb-28 px-6 md:px-12 lg:px-24 flex flex-col items-center justify-start overflow-hidden bg-bg w-full">
-        {/* Background Atmosphere Vignette */}
-        <div className="absolute inset-0 cinematic-vignette z-10 pointer-events-none" />
+      {/* TOP: Small intro tag */}
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 1, ease: "easeOut" }}
+        className="flex items-center gap-2 justify-center mb-6 z-20"
+      >
+        <span className="w-3 h-[1px] bg-brand/30" />
+        <span className="font-mono text-[10px] tracking-[0.24em] text-brand uppercase font-black">
+          CHAPTER I // {t("hero_badge")}
+        </span>
+        <span className="w-3 h-[1px] bg-brand/30" />
+      </motion.div>
 
-        {/* TOP: Small intro tag */}
+      {/* CENTER: Main typography statement with serif emotional contrast */}
+      <div className="w-full max-w-4xl mx-auto z-20 text-center mb-12">
+        <motion.h1
+          initial={{ opacity: 0, scale: 0.99 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 1.2, ease: "easeOut", delay: 0.1 }}
+          className="font-sans text-3xl md:text-6xl lg:text-[4.75rem] font-extrabold tracking-tight leading-[1.08] text-paper uppercase"
+        >
+          {t("hero_heading_line1")} <br />
+          <span className="font-serif italic font-normal text-brand lowercase tracking-wide normal-case inline-block my-1 md:my-2">
+            {t("hero_heading_line2")}
+          </span> <br />
+          {t("hero_heading_line3")}
+        </motion.h1>
+      </div>
+
+      {/* BELOW: Main showcase visual (Clean, majestic frame with zero overdesigned fake telemetry) */}
+      <div className="w-full max-w-4xl mx-auto z-20 mb-10">
         <motion.div
-          initial={{ opacity: 0, y: 15 }}
+          initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1.2, ease: "easeOut" }}
-          className="flex items-center gap-3 justify-center mb-10 z-20"
+          transition={{ duration: 1.4, ease: "easeOut", delay: 0.3 }}
+          className="relative aspect-video w-full border border-paper/10 bg-black/95 overflow-hidden shadow-[0_30px_70px_rgba(0,0,0,0.95)] group flex flex-col justify-center items-center"
         >
-          <span className="w-4 h-[1px] bg-brand" />
-          <span className="font-mono text-[10px] tracking-[0.3em] text-brand uppercase font-black">
-            {t("hero_badge")}
-          </span>
-          <span className="w-4 h-[1px] bg-brand" />
-        </motion.div>
-
-        {/* CENTER: Massive Typography with Elegant Serifs and Large Spacing */}
-        <div 
-          className="w-full max-w-4xl mx-auto z-20 text-center mb-20 cursor-pointer group"
-          onClick={onExploreWorks}
-          onMouseEnter={() => handleMouseEnter(language === "vi" ? "[ XEM DỰ ÁN ]" : "[ VIEW ARCHIVE ]")}
-          onMouseLeave={handleMouseLeave}
-        >
-          <motion.h1
-            initial={{ opacity: 0, y: 15 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1.4, ease: "easeOut", delay: 0.1 }}
-            className="font-sans text-3xl md:text-6xl lg:text-[5rem] font-extrabold tracking-widest leading-[1.12] text-paper uppercase transition-all duration-[600ms] group-hover:text-brand"
-          >
-            {t("hero_heading_line1")} <br />
-            <span className="font-serif italic font-normal text-brand lowercase tracking-wide normal-case inline-block my-2 md:my-4 transition-transform duration-[600ms] group-hover:scale-[1.01]">
-              {t("hero_heading_line2")}
-            </span> <br />
-            {t("hero_heading_line3")}
-          </motion.h1>
-        </div>
-
-        {/* BELOW: Cinematic Video/Image Featured Spotlight Grid */}
-        <div className="w-full max-w-4xl mx-auto z-20 mb-20">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1.6, ease: "easeOut", delay: 0.3 }}
-            className="relative aspect-video w-full border border-paper/10 bg-black/98 overflow-hidden shadow-[0_45px_95px_rgba(0,0,0,0.98)] group flex flex-col justify-center items-center cursor-pointer"
-            onClick={() => {
-              if (featuredProject) {
-                onSelectProject(featuredProject.id);
-              } else {
-                onExploreWorks();
-              }
-            }}
-            onMouseEnter={() => handleMouseEnter(language === "vi" ? "[ TIẾN VÀO ]" : "[ ENTER WORK ]")}
-            onMouseLeave={handleMouseLeave}
-          >
-            {featuredProject ? (
-              <>
-                {/* Embedded dynamic looping background video texture with zero YouTube branding shown */}
-                <AmbientPlayer project={featuredProject} />
-
-                {/* Symmetrical Quote Overlay as Showcase details */}
-                <div className="absolute inset-0 flex flex-col justify-center items-center px-8 md:px-16 text-center z-20 bg-bg/5 transition-colors duration-700 group-hover:bg-bg/20">
-                  <span className="text-[9px] bg-[#D9381E] text-white px-3 py-1 font-black tracking-[0.25em] uppercase mb-6 animate-pulse">
-                    {t("hero_label")}
-                  </span>
-
-                  <h3 className="font-sans text-xl md:text-3xl lg:text-4xl font-black text-paper uppercase tracking-wider leading-tight max-w-2xl transition-all duration-500 group-hover:text-brand">
-                    {featuredProject.title}
-                  </h3>
-
-                  <p className="font-mono text-[9px] text-brand tracking-[0.25em] uppercase mt-5 font-black">
-                    {featuredProject.category ? `${featuredProject.category.toUpperCase()} — ` : ""}{featuredProject.year || "2026"}
-                  </p>
-
-                  {featuredProject.role && (
-                    <p className="text-xs text-paper/60 font-sans tracking-widest mt-2 font-medium">
-                      {featuredProject.role}
-                    </p>
-                  )}
-
-                  {/* Clean Text-Only subtle indicator link instead of a chunky button */}
-                  <div className="mt-8 text-paper/90 font-mono text-[10px] tracking-[0.3em] uppercase transition-all duration-300 group-hover:text-brand flex items-center gap-2">
-                    <span>{language === "vi" ? "CHI TIẾT Ý TƯỞNG ↗" : "EXPLORE STUDY IN-DEPTH ↗"}</span>
+          {(() => {
+            const featuredProject = projects.find((p) => p.featured);
+            if (featuredProject) {
+              return (
+                <>
+                  <div 
+                    onClick={() => onSelectProject(featuredProject.id)}
+                    className="absolute inset-0 w-full h-full cursor-pointer z-10"
+                  >
+                    <VideoThumbnail
+                      project={featuredProject}
+                      className="absolute inset-0 w-full h-full object-cover opacity-35 grayscale group-hover:scale-[1.02] group-hover:opacity-45 transition-all duration-[1200ms]"
+                    />
                   </div>
-                </div>
-              </>
-            ) : (
+
+                  {/* Symmetrical Quote Overlay as Showcase details */}
+                  <div className="absolute inset-0 flex flex-col justify-center items-center px-8 md:px-16 text-center z-20 bg-bg/20">
+                    <span className="text-[9px] bg-[#D9381E] text-white px-2.5 py-1 rounded-none font-black tracking-widest uppercase mb-4">
+                      {t("hero_label")}
+                    </span>
+
+                    <h3 
+                      className="font-serif text-2xl md:text-3.5xl lg:text-4xl font-light italic text-paper uppercase tracking-normal leading-tight max-w-2xl cursor-pointer hover:text-brand transition-colors duration-300"
+                      onClick={() => onSelectProject(featuredProject.id)}
+                    >
+                      {featuredProject.title}
+                    </h3>
+
+                    <p className="font-mono text-[10px] text-brand tracking-[0.2em] uppercase mt-4 font-bold">
+                      {featuredProject.category ? `${featuredProject.category.toUpperCase()} — ` : ""}{featuredProject.year || "2026"}
+                    </p>
+
+                    {featuredProject.role && (
+                      <p className="text-xs text-paper/60 font-sans tracking-wide mt-1.5 font-light">
+                        {featuredProject.role}
+                      </p>
+                    )}
+
+                    <button
+                      onClick={() => onSelectProject(featuredProject.id)}
+                      className="mt-6 flex items-center gap-2 bg-black/40 hover:bg-brand/15 text-paper hover:text-brand border border-paper/20 hover:border-brand px-5 py-2.5 text-[10px] font-mono tracking-widest uppercase transition-all duration-300 rounded-none backdrop-blur-xs cursor-pointer shadow-md"
+                    >
+                      <Play className="w-3 h-3 fill-current" />
+                      <span>{language === "vi" ? "CHI TIẾT SÁNG TẠO" : "EXPLORE STUDY IN-DEPTH"}</span>
+                    </button>
+                  </div>
+                </>
+              );
+            }
+
+            return (
               <>
-                {/* Static elegant layout backfill */}
                 <img
                   src="https://images.unsplash.com/photo-1492691527719-9d1e07e534b4?auto=format&fit=crop&q=80&w=1200"
                   alt="Cinematic framing"
                   referrerPolicy="no-referrer"
-                  className="absolute inset-0 w-full h-full object-cover opacity-20 grayscale scale-100 group-hover:scale-105 transition-all duration-[2000ms]"
+                  className="absolute inset-0 w-full h-full object-cover opacity-25 grayscale group-hover:scale-[1.02] group-hover:opacity-20 transition-all duration-[1200ms]"
                 />
 
-                <div className="absolute inset-0 flex flex-col justify-center items-center px-8 md:px-16 text-center z-20 bg-bg/10">
-                  <p className="font-sans text-base md:text-xl lg:text-2xl text-paper/85 max-w-2xl leading-relaxed font-serif italic">
+                <div className="absolute inset-0 flex flex-col justify-center items-center px-8 md:px-16 text-center z-20 bg-bg/15">
+                  <p className="font-sans text-base md:text-xl lg:text-2xl text-paper/90 max-w-2xl leading-relaxed font-light font-serif italic">
                     &ldquo;{localizedQuote}&rdquo;
                   </p>
-                  <p className="font-mono text-[9px] text-brand tracking-[0.25em] uppercase mt-6 font-bold">
+                  <p className="font-mono text-[9px] text-brand tracking-[0.25em] uppercase mt-5 font-bold">
                     — {localizedAuthor}
                   </p>
                 </div>
               </>
-            )}
-          </motion.div>
-        </div>
+            );
+          })()}
 
-        {/* MID-BOTTOM: Spacious Pure CSS/Text Link acting as CTA with ZERO Bulky Buttons */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1.4, ease: "easeOut", delay: 0.4 }}
-          className="z-20 mb-24 text-center"
-        >
-          <div
-            onClick={onExploreWorks}
-            onMouseEnter={() => handleMouseEnter(language === "vi" ? "[ KHÁM PHÁ ]" : "[ DISCOVER ]")}
-            onMouseLeave={handleMouseLeave}
-            className="inline-block py-12 px-6 cursor-pointer group"
-          >
-            <span className="text-paper/80 font-mono text-xs tracking-[0.4em] uppercase font-bold transition-all duration-[550ms] border-b border-paper/10 pb-2 group-hover:text-brand group-hover:border-brand/40 group-hover:tracking-[0.45em]">
-              {t("hero_cta")} →
-            </span>
-          </div>
+          <div className="absolute inset-0 pointer-events-none" />
         </motion.div>
+      </div>
 
-        {/* BOTTOM: Massive vertical spacing and supporting philosophy grids */}
-        <div className="w-full max-w-4xl mx-auto z-20 grid grid-cols-1 md:grid-cols-3 gap-12 md:gap-16 border-t border-paper/10 pt-16 text-left">
-          <div className="space-y-4">
-            <span className="font-mono text-[11px] text-brand tracking-[0.25em] block font-black uppercase">
-              {t("hero_principle_1_title")}
-            </span>
-            <p className="text-sm font-normal text-paper/75 leading-relaxed font-sans mt-2">
-              {t("hero_principle_1_desc")}
-            </p>
-          </div>
-          <div className="space-y-4">
-            <span className="font-mono text-[11px] text-brand tracking-[0.25em] block font-black uppercase">
-              {t("hero_principle_2_title")}
-            </span>
-            <p className="text-sm font-normal text-paper/75 leading-relaxed font-sans mt-2">
-              {t("hero_principle_2_desc")}
-            </p>
-          </div>
-          <div className="space-y-4">
-            <span className="font-mono text-[11px] text-motion tracking-[0.25em] block font-black uppercase">
-              {t("hero_principle_3_title")}
-            </span>
-            <p className="text-sm font-normal text-paper/75 leading-relaxed font-sans mt-2">
-              {t("hero_principle_3_desc")}
-            </p>
-          </div>
-        </div>
-      </section>
-    </div>
+      {/* MID-BOTTOM: CTA (Aligned centered under the content grid) */}
+      <motion.div
+        initial={{ opacity: 0, y: 15 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 1.2, ease: "easeOut", delay: 0.4 }}
+        className="z-20 mb-16"
+      >
+        <button
+          onClick={onExploreWorks}
+          className="group flex items-center justify-center gap-3 bg-brand text-paper hover:bg-brand/90 px-8 py-4 cursor-pointer text-xs font-mono tracking-widest transition-all duration-300 uppercase font-black shadow-lg"
+          id="btn-hero-explore"
+        >
+          <Play className="w-3.5 h-3.5 fill-current" />
+          <span>{t("hero_cta")}</span>
+        </button>
+      </motion.div>
+
+      {/* BOTTOM: Supporting philosophy blocks aligned consistently across columns with cinematic headers */}
+      <div className="w-full max-w-4xl mx-auto z-20 grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12 border-t border-paper/15 pt-12 text-left">
+        {(() => {
+          const raw1 = t("hero_principle_1_title");
+          const p1 = raw1.split(" / ");
+          const num1 = p1[0] ? p1[0].trim() : "01";
+          const title1 = p1[1] ? p1[1].trim() : raw1;
+          return (
+            <div>
+              <span className="font-mono text-[10px] tracking-[0.24em] text-[#D9381E] block mb-2 font-black uppercase">
+                SECTION // {num1}
+              </span>
+              <h4 className="font-serif text-lg font-light italic text-paper uppercase tracking-normal mb-3">
+                {title1}
+              </h4>
+              <p className="text-sm font-light text-paper/80 leading-relaxed font-sans">
+                {t("hero_principle_1_desc")}
+              </p>
+            </div>
+          );
+        })()}
+
+        {(() => {
+          const raw2 = t("hero_principle_2_title");
+          const p2 = raw2.split(" / ");
+          const num2 = p2[0] ? p2[0].trim() : "02";
+          const title2 = p2[1] ? p2[1].trim() : raw2;
+          return (
+            <div>
+              <span className="font-mono text-[10px] tracking-[0.24em] text-[#D9381E] block mb-2 font-black uppercase">
+                SECTION // {num2}
+              </span>
+              <h4 className="font-serif text-lg font-light italic text-paper uppercase tracking-normal mb-3">
+                {title2}
+              </h4>
+              <p className="text-sm font-light text-paper/80 leading-relaxed font-sans">
+                {t("hero_principle_2_desc")}
+              </p>
+            </div>
+          );
+        })()}
+
+        {(() => {
+          const raw3 = t("hero_principle_3_title");
+          const p3 = raw3.split(" / ");
+          const num3 = p3[0] ? p3[0].trim() : "03";
+          const title3 = p3[1] ? p3[1].trim() : raw3;
+          return (
+            <div>
+              <span className="font-mono text-[10px] tracking-[0.24em] text-[#D9381E] block mb-2 font-black uppercase">
+                SECTION // {num3}
+              </span>
+              <h4 className="font-serif text-lg font-light italic text-paper uppercase tracking-normal mb-3">
+                {title3}
+              </h4>
+              <p className="text-sm font-light text-paper/80 leading-relaxed font-sans">
+                {t("hero_principle_3_desc")}
+              </p>
+            </div>
+          );
+        })()}
+      </div>
+    </section>
   );
 }
