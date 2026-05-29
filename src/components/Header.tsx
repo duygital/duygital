@@ -1,6 +1,7 @@
 import { motion } from "motion/react";
 import { Sliders } from "lucide-react";
 import { translations } from "../translations";
+import { useState, useEffect } from "react";
 
 interface HeaderProps {
   activeTab: string;
@@ -21,6 +22,24 @@ export default function Header({
 }: HeaderProps) {
   const t = translations[language];
 
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    if (activeTab !== "home") {
+      setScrolled(true);
+      return;
+    }
+
+    const handleScroll = () => {
+      // Transition exactly at 150px
+      setScrolled(window.scrollY > 150);
+    };
+
+    handleScroll();
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [activeTab]);
+
   const navItems = [
     { id: "home", label: t.header.home },
     { id: "works", label: t.header.works },
@@ -29,8 +48,12 @@ export default function Header({
     { id: "contact", label: t.header.contact },
   ];
 
+  const headerBgClass = scrolled
+    ? "bg-[#0D0D0D]/85 border-b border-paper/15 backdrop-blur-md py-4 md:py-4.5 shadow-xl"
+    : "bg-transparent border-b border-transparent py-5 md:py-6";
+
   return (
-    <header className="fixed top-0 left-0 w-full z-40 bg-bg/95 border-b border-paper/15 px-6 py-5 md:px-12 grid grid-cols-2 md:grid-cols-3 items-center animate-fade-in backdrop-blur-md">
+    <header className={`fixed top-0 left-0 w-full z-40 px-6 md:px-12 grid grid-cols-2 md:grid-cols-3 items-center transition-all duration-500 ease-in-out ${headerBgClass}`}>
       {/* LEFT: DUYGITAL logo only */}
       <div className="flex items-center justify-self-start">
         <button

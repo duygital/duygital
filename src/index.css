@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,300;1,400;1,500;1,600;1,700;1,800&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,300;1,9..144,400;1,9..144,600;1,9..144,700&family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@300;400;500;600&family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,300;1,400;1,500;1,600;1,700;1,800&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,300;1,9..144,400;1,9..144,600;1,9..144,700&family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@300;400;500;600&family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&family=Space+Grotesk:wght@300;400;500;600;700&family=Cinzel:wght@400;500;600;700;800;900&display=swap');
 @import "tailwindcss";
 
 @theme {
@@ -12,6 +12,7 @@
   --font-sans: "Outfit", system-ui, sans-serif;
   --font-mono: "JetBrains Mono", monospace;
   --font-display: "Outfit", sans-serif;
+  --font-cinzel: "Cinzel", "Playfair Display", serif;
 }
 
 /* Custom styles for high-end cinematic editorial looks */
@@ -24,18 +25,13 @@ html, body {
 }
 
 /* Scrollbar rules */
+html, body {
+  -ms-overflow-style: none !important; /* IE and Edge */
+  scrollbar-width: none !important; /* Firefox */
+}
 ::-webkit-scrollbar {
-  width: 6px;
-}
-::-webkit-scrollbar-track {
-  background: #05010B;
-}
-::-webkit-scrollbar-thumb {
-  background: #D9381E;
-  border-radius: 3px;
-}
-::-webkit-scrollbar-thumb:hover {
-  background: #FF5A00;
+  display: none !important; /* Chrome, Safari and Opera */
+  width: 0 !important;
 }
 
 /* Cleared noise grain for high-end solid visual confidence */
@@ -64,4 +60,225 @@ html, body {
   color: var(--color-motion);
   text-transform: uppercase;
 }
+
+/* Hardened Hero Parallax layouts & variables */
+.parallax-hero {
+  position: relative !important;
+  width: 100% !important;
+  height: 100vh !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  overflow: hidden !important;
+  background-color: #0D0D0D !important;
+  z-index: 10 !important;
+}
+
+.hero-bg {
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  overflow: hidden;
+  z-index: 1 !important;
+  transform: scale(1.1) !important; /* Zoom-mồi to avoid black margins on mouse hover */
+}
+
+.hero-bg img {
+  object-fit: cover !important;
+  width: 100% !important;
+  height: 100% !important;
+  display: block;
+}
+
+.hero-vignette {
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  background: radial-gradient(circle, rgba(0,0,0,0.15) 0%, rgba(0,0,0,0.7) 100%) !important;
+  z-index: 2 !important;
+  pointer-events: none !important;
+}
+
+.char-left-wrap {
+  position: absolute !important;
+  top: 10vh !important;
+  bottom: auto !important;
+  left: 0 !important;
+  height: 80vh !important;
+  width: 50% !important;
+  z-index: 5 !important;
+  pointer-events: none !important;
+}
+
+.char-right-wrap {
+  position: absolute !important;
+  top: 10vh !important;
+  bottom: auto !important;
+  right: 0 !important;
+  height: 80vh !important;
+  width: 50% !important;
+  z-index: 5 !important;
+  pointer-events: none !important;
+}
+
+/* Master viewport for Shopify-inspired cinematic camera-lens zoom effects */
+.camera-lens-viewport {
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  overflow: hidden !important;
+  transform-origin: 50% 45% !important;
+  z-index: 3 !important;
+  pointer-events: none !important;
+}
+
+/* High-performance pure-CSS glowing stardust flash burst */
+.celestial-spark {
+  position: absolute !important;
+  top: 45% !important;
+  left: 50% !important;
+  width: 6px !important;
+  height: 6px !important;
+  background-color: #FFFFFF !important;
+  border-radius: 50% !important;
+  transform: translate(-50%, -50%) scale(0) !important;
+  z-index: 15 !important;
+  pointer-events: none !important;
+  box-shadow: 0 0 30px 15px rgba(255, 255, 255, 1), 0 0 80px 40px rgba(255, 255, 255, 0.9), 0 0 200px 100px rgba(255, 255, 255, 0.7) !important;
+  opacity: 0;
+}
+
+.hero-char-left,
+.hero-char-right {
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  overflow: hidden !important;
+}
+
+.hero-char-left img,
+.hero-char-right img {
+  object-fit: contain !important;
+  height: 100% !important;
+  width: 100% !important;
+  display: block !important;
+}
+
+.hero-char-left img {
+  object-position: center left !important;
+}
+
+.hero-char-right img {
+  object-position: center right !important;
+}
+
+/* Distinctive colored vs etched layers */
+.char-colored {
+  position: absolute !important;
+  inset: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  opacity: 1;
+}
+
+.char-etched {
+  position: absolute !important;
+  inset: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  opacity: 0;
+  /* Luminous organic contour fresco line-art glow */
+  filter: brightness(0.2) invert(1) sepia(0.65) saturate(2.4) contrast(1.2) drop-shadow(0 0 15px rgba(235, 210, 170, 0.65)) !important;
+}
+
+/* Radiant physical exposure wave element */
+.radial-exposure-wave {
+  position: absolute !important;
+  top: 50% !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%) scale(0) !important;
+  width: 15vmax !important;
+  height: 15vmax !important;
+  border-radius: 50% !important;
+  background: radial-gradient(circle, rgba(255,255,255,1) 0%, rgba(244,233,212,0.85) 30%, rgba(197,168,128,0.3) 60%, rgba(255,255,255,0) 80%) !important;
+  filter: blur(14px) !important;
+  mix-blend-mode: screen !important;
+  pointer-events: none !important;
+  z-index: 15 !important;
+  opacity: 0;
+}
+
+/* Starfield void background */
+.starfield-bg {
+  position: absolute !important;
+  inset: 0 !important;
+  background-image: 
+    radial-gradient(1px 1px at 25px 25px, white, transparent),
+    radial-gradient(1.5px 1.5px at 75px 125px, rgba(255, 255, 255, 0.8), transparent),
+    radial-gradient(1px 1px at 150px 75px, white, transparent),
+    radial-gradient(2px 2px at 220px 200px, rgba(244, 233, 212, 0.8), transparent),
+    radial-gradient(1px 1px at 310px 90px, white, transparent),
+    radial-gradient(1.5px 1.5px at 380px 280px, white, transparent),
+    radial-gradient(1px 1px at 450px 180px, white, transparent);
+  background-size: 480px 480px !important;
+  background-repeat: repeat !important;
+  opacity: 0;
+  z-index: 2 !important;
+  pointer-events: none !important;
+}
+
+.main-portfolio-content {
+  background-color: #0D0D0D !important;
+  position: relative !important;
+  z-index: 20 !important;
+  margin: 0 !important;
+}
+
+/* Cinematic subtle floating dust */
+.dust-container {
+  position: absolute !important;
+  inset: 0 !important;
+  z-index: 4 !important;
+  pointer-events: none !important;
+}
+
+.dust-particle {
+  position: absolute !important;
+  width: 2px !important;
+  height: 2px !important;
+  background: rgba(255, 255, 255, 0.45) !important;
+  border-radius: 50% !important;
+  box-shadow: 0 0 6px 1px rgba(255, 255, 255, 0.6) !important;
+}
+
+@keyframes floatDust1 {
+  0% { transform: translate(0, 105vh) scale(0.8); opacity: 0; }
+  15% { opacity: 0.5; }
+  85% { opacity: 0.5; }
+  100% { transform: translate(30px, -5vh) scale(1.2); opacity: 0; }
+}
+
+@keyframes floatDust2 {
+  0% { transform: translate(0, 105vh) scale(1.1); opacity: 0; }
+  20% { opacity: 0.4; }
+  80% { opacity: 0.4; }
+  100% { transform: translate(-40px, -5vh) scale(0.7); opacity: 0; }
+}
+
+.dp-1 { left: 15% !important; animation: floatDust1 18s infinite linear !important; }
+.dp-2 { left: 30% !important; animation: floatDust2 24s infinite linear !important; animation-delay: 2s !important; }
+.dp-3 { left: 45% !important; animation: floatDust1 22s infinite linear !important; animation-delay: 6s !important; }
+.dp-4 { left: 60% !important; animation: floatDust2 20s infinite linear !important; animation-delay: 4s !important; }
+.dp-5 { left: 75% !important; animation: floatDust1 26s infinite linear !important; animation-delay: 8s !important; }
+.dp-6 { left: 88% !important; animation: floatDust2 16s infinite linear !important; animation-delay: 3s !important; }
+.dp-7 { left: 22% !important; animation: floatDust1 21s infinite linear !important; animation-delay: 7s !important; }
+.dp-8 { left: 68% !important; animation: floatDust2 23s infinite linear !important; animation-delay: 11s !important; }
+
 

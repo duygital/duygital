@@ -7,6 +7,7 @@ import Thinking from "./components/Thinking";
 import Collaboration from "./components/Collaboration";
 import Contact from "./components/Contact";
 import CMSConfig from "./components/CMSConfig";
+import Footer from "./components/Footer";
 
 import {
   DEFAULT_PROJECTS,
@@ -179,6 +180,11 @@ export default function App() {
     };
   }, []);
 
+  // Jump scroll back to top of the page immediately upon switching tabs or changing selected project
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [activeTab, selectedProjectId]);
+
   // Reactive parsing when language toggles or new sheet is synchronized
   useEffect(() => {
     if (rawSheetsData) {
@@ -320,16 +326,11 @@ export default function App() {
       </main>
 
       {/* Grounded footer */}
-      <footer className="w-full py-8 text-center text-[10px] font-mono text-paper/20 border-t border-paper/15 mt-16 flex flex-col items-center justify-center gap-1.5 z-30 relative bg-bg/95 backdrop-blur">
-        <span>
-          {translations[language]?.footer?.copyright || (language === "en"
-            ? "© 2026 DUYGITAL. DESIGNED WITH EDITORIAL PACING AND FOCUS."
-            : "© 2026 DUYGITAL. THIẾT KẾ VỚI NHỊP ĐIỆU VÀ SỰ PHÁT TRIỂN CÓ CHỦ ĐÍCH.")}
-        </span>
-        <span>
-          {translations[language]?.footer?.subtitle || (language === "en" ? "PORTFOLIO AND PROJECT INDEX." : "BẢN THIẾT KẾ VÀ MỤC LỤC TÁC PHẨM.")}
-        </span>
-      </footer>
+      <Footer
+        language={language}
+        activeTab={activeTab}
+        setActiveTab={setActiveTab}
+      />
 
       {/* Hidden/Config modal CMS Setup Popup */}
       {isCMSModalOpen && (
