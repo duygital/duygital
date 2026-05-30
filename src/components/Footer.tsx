@@ -64,12 +64,11 @@ export default function Footer({ language, activeTab, setActiveTab }: FooterProp
             <span className="font-sans font-black text-sm tracking-[0.25em] text-paper">
               DUYGITAL
             </span>
-            <span className="w-1 h-1 rounded-full bg-brand animate-pulse" />
           </div>
           <span className="font-mono text-[9px] tracking-[0.16em] text-paper/35 lowercase">
             {t.footer.copyright}
           </span>
-          <span className="font-mono text-[8px] tracking-[0.18em] text-brand/40 uppercase">
+          <span className="font-mono text-[8px] tracking-[0.18em] text-paper/45 uppercase border-t border-paper/10 pt-1 mt-0.5">
             {t.footer.subtitle}
           </span>
         </div>

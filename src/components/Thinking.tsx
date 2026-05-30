@@ -120,7 +120,7 @@ export default function Thinking({ language, workflow }: ThinkingProps) {
   const activeSteps = workflow && workflow.length > 0 ? workflow : DEFAULT_WORKFLOW[language];
 
   return (
-    <section className="relative min-h-screen py-24 px-6 md:px-12 lg:px-24 max-w-5xl mx-auto z-20 font-sans" id="thinking-process-section">
+    <section className="relative min-h-screen py-24 px-6 md:px-12 max-w-7xl mx-auto z-20 font-sans" id="thinking-process-section">
       
       {/* Page Title Header Block - Editorial high-contrast design */}
       <div className="border-b border-paper/15 pb-8 mb-20">
@@ -417,16 +417,7 @@ export default function Thinking({ language, workflow }: ThinkingProps) {
 
       </div>
 
-      {/* Grounded statement of intent frame - high contrast */}
-      <div className="mt-28 border border-[#D9381E]/30 bg-paper/[0.02] p-8 md:p-12 rounded-none relative overflow-hidden text-left shadow-[0_8px_30px_rgb(0,0,0,0.5)]">
-        <CornerRightDown className="absolute -bottom-6 -right-6 w-24 h-24 text-paper/10 stroke-[0.5] pointer-events-none" />
-        <span className="font-mono text-[10px] text-[#D9381E] tracking-[0.24em] block mb-3 font-semibold uppercase">
-          {language === "en" ? "STATEMENT OF INTENT" : "CAM KẾT CHẤT LƯỢNG"}
-        </span>
-        <p className="font-serif italic text-xl md:text-3xl text-[#F5F5F0]/90 leading-relaxed max-w-3xl font-light">
-          &ldquo;{t.thinking.principleQuote}&rdquo;
-        </p>
-      </div>
+
     </section>
   );
 }

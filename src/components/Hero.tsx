@@ -1,7 +1,8 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useMemo } from "react";
 import { Play } from "lucide-react";
 import { PhilosophySnippet, Project, HeroContent } from "../types";
 import VideoThumbnail from "./media/VideoThumbnail";
+import ParticleCanvas from "./ParticleCanvas";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
@@ -102,6 +103,9 @@ export default function Hero({
 
   const localizedAuthor = t("hero_quote_author") || (language === "en" ? philosophySnippet.author : "Duygital");
 
+  // Dynamic majestic serif display font selection to prevent Vietnamese diacritic blemishes
+  const displayFont = '"Cormorant Garamond", serif';
+
   // Dynamic canvas images with local storage persistence
   const [leftCharUrl] = useState(() => {
     return localStorage.getItem("duygital_canvas_left") || "https://sv2.anhsieuviet.com/2026/05/28/trai.png";
@@ -171,8 +175,8 @@ export default function Hero({
           trigger: parent,
           pin: true,
           start: "top top",
-          end: "+=2600",
-          scrub: 0.5,
+          end: "+=1500",
+          scrub: 0.35,
           anticipatePin: 1,
           invalidateOnRefresh: true,
         }
@@ -186,7 +190,7 @@ export default function Hero({
       gsap.set(".char-colored", { opacity: 1 });
       gsap.set(".char-etched", { opacity: 0 });
       gsap.set(".radial-exposure-wave", { scale: 0, opacity: 0 });
-      gsap.set(".starfield-bg", { opacity: 0 });
+      gsap.set(".starfield-bg", { opacity: 0.35 });
       gsap.set(".hero-bg", { scale: 1.1, opacity: 1, filter: "none" });
       gsap.set(".renaissance-overlay-wrap", { opacity: 1, filter: "none", display: "block", pointerEvents: "none" });
       gsap.set(".layer-bottom-hero", { opacity: 0, scale: 0.95, pointerEvents: "none" });
@@ -357,10 +361,10 @@ export default function Hero({
   }, [leftCharUrl, rightCharUrl, bgColorUrl]);
 
   return (
-    <div ref={masterRef} className="relative w-full bg-[#0D0D0D] p-0 m-0">
+    <div ref={masterRef} className="relative w-full bg-[#0A0314] p-0 m-0">
       
       {/* ================= EXPERIENCE SCROLL SCENE (z-10) ================= */}
-      <div ref={containerRef} className="intro-scroll-scene relative w-full h-screen overflow-hidden bg-[#0C0C0C]">
+      <div ref={containerRef} className="intro-scroll-scene relative w-full h-screen overflow-hidden bg-[#0A0314]">
         
         {/* ================= LAYER 1: BOTTOM CORE BRANDING HERO (z-10) ================= */}
         <div 
@@ -368,19 +372,19 @@ export default function Hero({
           className="layer-bottom-hero absolute inset-0 w-full h-full flex flex-col justify-between p-0 m-0 z-10"
         >
           {/* Symmetrical dark backdrop mesh */}
-          <div className="absolute inset-0 bg-[#0D0D0D] z-1 pointer-events-none" />
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(197,168,128,0.04)_0%,transparent_70%)] z-2 pointer-events-none" />
+          <div className="absolute inset-0 bg-[#0A0314] z-1 pointer-events-none" />
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(217,56,30,0.04)_0%,transparent_70%)] z-2 pointer-events-none" />
           
           {/* Layer 1 Sleek Top Header Navigation */}
-          <header className="w-full flex items-center justify-between px-8 py-6 md:px-16 z-30 border-b border-white/[0.04] bg-[#0D0D0D]/60 backdrop-blur-md relative uppercase text-[#A0A0A0]">
+          <header className="w-full flex items-center justify-between px-8 py-6 md:px-16 z-30 border-b border-white/[0.04] bg-[#0A0314]/60 backdrop-blur-md relative uppercase text-[#A0A0A0]">
             <div className="flex items-center gap-6 sm:gap-12 pointer-events-auto">
               <span 
                 className="text-[#F4F1EA] text-base md:text-lg font-bold tracking-[0.25em] cursor-pointer"
-                style={{ fontFamily: '"Cinzel", "Playfair Display", serif' }}
+                style={{ fontFamily: displayFont }}
               >
                 DUYGITAL
               </span>
-              <span className="w-1.5 h-1.5 rounded-full bg-[#C5A880] hidden sm:inline-block animate-pulse" />
+              <span className="w-1.5 h-1.5 rounded-full bg-[#D9381E] hidden sm:inline-block animate-pulse" />
               <span className="text-[8px] font-mono tracking-[0.3em] hidden sm:inline-block">
                 {language === "vi" ? "XƯỞNG BIÊN TẬP" : "POST-PRODUCTION"}
               </span>
@@ -414,8 +418,8 @@ export default function Hero({
               
               {/* Premium Rotating Craftsman Badge design */}
               <div className="relative w-24 h-24 mb-6 animate-[spin_20s_linear_infinite] select-none pointer-events-none opacity-85">
-                <svg viewBox="0 0 100 100" className="w-full h-full text-[#C5A880]/60">
-                  <path id="circlePath" d="M 50, 50 m -37, 0 a 37,37 0 1,1 74,0 a 37,37 0 1,1 -74,0" fill="none" />
+                <svg viewBox="0 0 100 100" className="w-full h-full text-[#D9381E]/60">
+                   <path id="circlePath" d="M 50, 50 m -37, 0 a 37,37 0 1,1 74,0 a 37,37 0 1,1 -74,0" fill="none" />
                   <text className="font-mono uppercase text-[7px] fill-current tracking-[0.08em]">
                     <textPath href="#circlePath">
                       {language === "vi" 
@@ -424,20 +428,20 @@ export default function Hero({
                     </textPath>
                   </text>
                 </svg>
-                <div className="absolute inset-0 flex items-center justify-center font-mono text-[9px] text-[#C5A880] font-bold">
+                <div className="absolute inset-0 flex items-center justify-center font-mono text-[9px] text-[#D9381E] font-bold">
                   ★
                 </div>
               </div>
 
               {/* Subheading badge line */}
-              <span className="text-[#C5A880] font-mono text-[9px] md:text-[10px] tracking-[0.38em] uppercase mb-4 block select-none">
+              <span className="text-[#D9381E] font-mono text-[9px] md:text-[10px] tracking-[0.38em] uppercase mb-4 block select-none">
                 {language === "vi" ? "CHAPTER I // XƯỞNG BIÊN TẬP DUYGITAL" : "CHAPTER I // DUYGITAL EDITING STUDIO"}
               </span>
 
               {/* Magnificent displays heading statement */}
               <h1 
                 className="text-[#F4F1EA] text-4xl sm:text-6xl md:text-[5rem] lg:text-[6.5rem] font-bold tracking-[0.25em] uppercase mb-7 leading-none select-none text-center"
-                style={{ fontFamily: '"Cinzel", "Playfair Display", serif' }}
+                style={{ fontFamily: displayFont }}
               >
                 DUYGITAL
               </h1>
@@ -452,7 +456,7 @@ export default function Hero({
               {/* Main explore CTA click target button */}
               <button 
                 onClick={handleScrollToPortfolio}
-                className="px-10 py-4.5 border border-[#C5A880] text-[#C5A880] text-[10px] font-mono uppercase tracking-[0.22em] bg-transparent transition-all duration-300 hover:bg-[#F4F1EA] hover:text-[#0D0D0D] hover:border-[#F4F1EA] rounded-none cursor-pointer shadow-md flex items-center gap-3"
+                className="px-10 py-4.5 border border-[#D9381E] text-[#D9381E] text-[10px] font-mono uppercase tracking-[0.22em] bg-transparent transition-all duration-300 hover:bg-[#F4F1EA] hover:text-[#0A0314] hover:border-[#F4F1EA] rounded-none cursor-pointer shadow-md flex items-center gap-3"
               >
                 <span>{language === "vi" ? "XEM CÁC TÁC PHẨM TUYỂN CHỌN" : "EXPLORE SELECT WORKS"}</span>
                 <span className="animate-bounce">↓</span>
@@ -475,7 +479,9 @@ export default function Hero({
           <div className="camera-lens-viewport scale-110 !transform">
             
             {/* Deep star-filled void background (initially hidden, revealed as pigment dissolves) */}
-            <div className="starfield-bg" />
+            <div className="starfield-bg">
+              <ParticleCanvas />
+            </div>
 
             {/* Background image overlay layer */}
             <div className="bg-scroll-wrap absolute inset-0 w-full h-full z-1">
@@ -590,15 +596,15 @@ export default function Hero({
       </div>
 
       {/* ================= SECTION 2: PORTFOLIO MAIN LISTING CONTENT ================= */}
-      <div className="main-portfolio-content relative min-h-0 bg-[#0D0D0D] z-20 py-12 px-6 md:px-12 lg:px-24 border-t border-white/[0.05]">
+      <div className="main-portfolio-content relative min-h-0 bg-[#0A0314] z-20 py-12 border-t border-white/[0.05]">
         
-        <div className="max-w-4xl mx-auto mb-12 text-center select-none">
+        <div className="max-w-7xl mx-auto px-6 md:px-12 mb-12 text-center select-none">
           <div className="anim-reveal mb-6 flex items-center gap-2 justify-center">
-            <span className="w-3 h-[1px] bg-[#C5A880]/35" />
-            <span className="font-mono text-[10px] tracking-[0.24em] text-[#C5A880] uppercase font-black">
+            <span className="w-3 h-[1px] bg-[#D9381E]/35" />
+            <span className="font-mono text-[10px] tracking-[0.24em] text-[#D9381E] uppercase font-black">
               CHAPTER II // {t("hero_label")}
             </span>
-            <span className="w-3 h-[1px] bg-[#C5A880]/35" />
+            <span className="w-3 h-[1px] bg-[#D9381E]/35" />
           </div>
 
           {/* Central Featured Video Frame */}
@@ -619,18 +625,18 @@ export default function Hero({
                     </div>
 
                     <div className="absolute inset-0 flex flex-col justify-center items-center px-6 md:px-16 text-center z-20 bg-black/40 pointer-events-none">
-                      <span className="text-[9px] bg-[#C5A880] text-black px-2.5 py-1 rounded-none font-black tracking-widest uppercase mb-4 select-none">
+                      <span className="text-[9px] bg-[#D9381E] text-white px-2.5 py-1 rounded-none font-black tracking-widest uppercase mb-4 select-none">
                         {t("hero_label")}
                       </span>
 
                       <h3 
-                        className="font-serif text-2xl md:text-3.5xl lg:text-4xl font-light italic text-[#F4F1EA] uppercase tracking-normal leading-tight max-w-2xl cursor-pointer hover:text-[#C5A880] pointer-events-auto transition-colors duration-300"
+                        className="font-serif text-2xl md:text-3.5xl lg:text-4xl font-light italic text-[#F4F1EA] uppercase tracking-normal leading-tight max-w-2xl cursor-pointer hover:text-[#D9381E] pointer-events-auto transition-colors duration-300"
                         onClick={() => onSelectProject(featuredProject.id)}
                       >
                         {featuredProject.title}
                       </h3>
 
-                      <p className="font-mono text-[10px] text-[#C5A880] tracking-[0.2em] uppercase mt-4 font-bold select-none">
+                      <p className="font-mono text-[10px] text-[#D9381E] tracking-[0.2em] uppercase mt-4 font-bold select-none">
                         {featuredProject.category ? `${featuredProject.category.toUpperCase()} — ` : ""}{featuredProject.year || "2026"}
                       </p>
 
@@ -642,7 +648,7 @@ export default function Hero({
 
                       <button
                         onClick={() => onSelectProject(featuredProject.id)}
-                        className="mt-6 flex items-center gap-2 bg-black/65 hover:bg-[#C5A880]/20 text-[#C5A880] hover:text-[#F4F1EA] border border-white/10 hover:border-[#C5A880] px-6 py-3 text-[10px] font-mono tracking-widest uppercase transition-all duration-300 pointer-events-auto rounded-none backdrop-blur-xs cursor-pointer shadow-md"
+                        className="mt-6 flex items-center gap-2 bg-black/65 hover:bg-[#D9381E]/20 text-[#D9381E] hover:text-[#F4F1EA] border border-white/10 hover:border-[#D9381E] px-6 py-3 text-[10px] font-mono tracking-widest uppercase transition-all duration-300 pointer-events-auto rounded-none backdrop-blur-xs cursor-pointer shadow-md"
                       >
                         <Play className="w-3 h-3 fill-current" />
                         <span>{language === "vi" ? "CHI TIẾT SÁNG TẠO" : "EXPLORE SELECTED WORK"}</span>
@@ -657,7 +663,7 @@ export default function Hero({
                   <p className="font-sans text-base md:text-xl lg:text-2xl text-[#F4F1EA]/90 max-w-2xl leading-relaxed font-light font-serif italic">
                     &ldquo;{localizedQuote}&rdquo;
                   </p>
-                  <p className="font-mono text-[9px] text-[#C5A880] tracking-[0.25em] uppercase mt-5 font-bold">
+                  <p className="font-mono text-[9px] text-[#D9381E] tracking-[0.25em] uppercase mt-5 font-bold">
                     — {localizedAuthor}
                   </p>
                 </div>
@@ -674,12 +680,12 @@ export default function Hero({
               const title1 = p1[1] ? p1[1].trim() : raw1;
               return (
                 <div className="anim-reveal">
-                  <span className="font-mono text-[9px] tracking-[0.22em] text-[#C5A880] block mb-3 font-black uppercase select-none">
+                  <span className="font-mono text-[9px] tracking-[0.22em] text-[#D9381E] block mb-3 font-black uppercase select-none">
                     SECTION // {num1}
                   </span>
                   <h4 
                     className="text-lg md:text-xl font-light italic text-[#F4F1EA] uppercase tracking-normal mb-3 select-none"
-                    style={{ fontFamily: '"Cinzel", "Playfair Display", serif' }}
+                    style={{ fontFamily: displayFont }}
                   >
                     {title1}
                   </h4>
@@ -697,12 +703,12 @@ export default function Hero({
               const title2 = p2[1] ? p2[1].trim() : raw2;
               return (
                 <div className="anim-reveal">
-                  <span className="font-mono text-[9px] tracking-[0.22em] text-[#C5A880] block mb-3 font-black uppercase select-none">
+                  <span className="font-mono text-[9px] tracking-[0.22em] text-[#D9381E] block mb-3 font-black uppercase select-none">
                     SECTION // {num2}
                   </span>
                   <h4 
                     className="text-lg md:text-xl font-light italic text-[#F4F1EA] uppercase tracking-normal mb-3 select-none"
-                    style={{ fontFamily: '"Cinzel", "Playfair Display", serif' }}
+                    style={{ fontFamily: displayFont }}
                   >
                     {title2}
                   </h4>
@@ -720,12 +726,12 @@ export default function Hero({
               const title3 = p3[1] ? p3[1].trim() : raw3;
               return (
                 <div className="anim-reveal">
-                  <span className="font-mono text-[9px] tracking-[0.22em] text-[#C5A880] block mb-3 font-black uppercase select-none">
+                  <span className="font-mono text-[9px] tracking-[0.22em] text-[#D9381E] block mb-3 font-black uppercase select-none">
                     SECTION // {num3}
                   </span>
                   <h4 
                     className="text-lg md:text-xl font-light italic text-[#F4F1EA] uppercase tracking-normal mb-3 select-none"
-                    style={{ fontFamily: '"Cinzel", "Playfair Display", serif' }}
+                    style={{ fontFamily: displayFont }}
                   >
                     {title3}
                   </h4>

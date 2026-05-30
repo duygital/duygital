@@ -286,7 +286,7 @@ export default function Contact({ language }: ContactProps) {
   };
 
   return (
-    <section className="relative min-h-screen py-24 px-6 md:px-12 lg:px-24 max-w-5xl mx-auto z-20 text-left">
+    <section className="relative min-h-screen py-24 px-6 md:px-12 max-w-7xl mx-auto z-20 text-left">
       {/* Visual background ambient details */}
       <div className="absolute top-10 right-0 w-72 h-72 bg-brand/5 rounded-full blur-3xl pointer-events-none" />
       <div className="absolute -bottom-10 left-10 w-80 h-80 bg-motion/5 rounded-full blur-3xl pointer-events-none" />

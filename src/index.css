@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,300;1,400;1,500;1,600;1,700;1,800&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,300;1,9..144,400;1,9..144,600;1,9..144,700&family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@300;400;500;600&family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&family=Space+Grotesk:wght@300;400;500;600;700&family=Cinzel:wght@400;500;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&family=Montserrat:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap');
 @import "tailwindcss";
 
 @theme {
@@ -9,10 +9,10 @@
   --color-brand-dim: #3a0d07;
   
   --font-serif: "Cormorant Garamond", Georgia, serif;
-  --font-sans: "Outfit", system-ui, sans-serif;
+  --font-sans: "Montserrat", sans-serif;
   --font-mono: "JetBrains Mono", monospace;
-  --font-display: "Outfit", sans-serif;
-  --font-cinzel: "Cinzel", "Playfair Display", serif;
+  --font-display: "Montserrat", sans-serif;
+  --font-cinzel: "Cormorant Garamond", serif;
 }
 
 /* Custom styles for high-end cinematic editorial looks */
@@ -69,7 +69,7 @@ html, body {
   margin: 0 !important;
   padding: 0 !important;
   overflow: hidden !important;
-  background-color: #0D0D0D !important;
+  background-color: #0A0314 !important;
   z-index: 10 !important;
 }
 
@@ -219,23 +219,55 @@ html, body {
 .starfield-bg {
   position: absolute !important;
   inset: 0 !important;
-  background-image: 
-    radial-gradient(1px 1px at 25px 25px, white, transparent),
-    radial-gradient(1.5px 1.5px at 75px 125px, rgba(255, 255, 255, 0.8), transparent),
-    radial-gradient(1px 1px at 150px 75px, white, transparent),
-    radial-gradient(2px 2px at 220px 200px, rgba(244, 233, 212, 0.8), transparent),
-    radial-gradient(1px 1px at 310px 90px, white, transparent),
-    radial-gradient(1.5px 1.5px at 380px 280px, white, transparent),
-    radial-gradient(1px 1px at 450px 180px, white, transparent);
-  background-size: 480px 480px !important;
-  background-repeat: repeat !important;
   opacity: 0;
   z-index: 2 !important;
   pointer-events: none !important;
 }
 
+@keyframes starTwinkle {
+  0%, 100% {
+    opacity: 0.15;
+    transform: scale(0.65);
+  }
+  50% {
+    opacity: 0.95;
+    transform: scale(1.155);
+  }
+}
+
+@keyframes starPulseGlow {
+  0%, 100% {
+    opacity: 0.25;
+    transform: scale(0.7);
+    filter: drop-shadow(0 0 1px rgba(255, 255, 255, 0.35));
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.22);
+    filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.95)) drop-shadow(0 0 10px rgba(217, 56, 30, 0.55));
+  }
+}
+
+.star-element {
+  position: absolute !important;
+  border-radius: 50% !important;
+  pointer-events: none !important;
+}
+
+.star-ambient-twinkle {
+  animation-name: starTwinkle !important;
+  animation-iteration-count: infinite !important;
+  animation-timing-function: ease-in-out !important;
+}
+
+.star-ambient-glow {
+  animation-name: starPulseGlow !important;
+  animation-iteration-count: infinite !important;
+  animation-timing-function: ease-in-out !important;
+}
+
 .main-portfolio-content {
-  background-color: #0D0D0D !important;
+  background-color: #0A0314 !important;
   position: relative !important;
   z-index: 20 !important;
   margin: 0 !important;

@@ -182,7 +182,7 @@ export default function Works({ projects, language, selectedProjectId, setSelect
     const isVi = language === "vi";
 
     return (
-      <div className="relative min-h-screen py-16 px-6 md:px-12 lg:px-24 max-w-7xl mx-auto z-20 animate-fade-in font-sans text-left">
+      <div className="relative min-h-screen py-16 px-6 md:px-12 max-w-7xl mx-auto z-20 animate-fade-in font-sans text-left">
         
         {/* Back navigation button - bold crimson high contrast */}
         <button
@@ -397,19 +397,7 @@ export default function Works({ projects, language, selectedProjectId, setSelect
               </div>
             )}
 
-            {/* Human Editorial Note (Quotations emphasize only, serif) */}
-            <div className="bg-paper/[0.015] border border-white/10 p-8 rounded-none relative overflow-hidden">
-              <div className="absolute top-0 right-0 w-24 h-24 bg-[#D9381E]/5 rounded-full blur-2xl pointer-events-none" />
-              <h3 className="font-mono text-[10px] text-[#D9381E] tracking-[0.24em] uppercase font-black mb-3 pb-2 flex items-center gap-2 border-b border-white/5">
-                <span className="text-[#F5F5F0]/30 font-mono text-xs font-bold">—</span>
-                {isVi ? "BẢN CHẤT CỦA CẮT CẢNH" : "THE PHILOSOPHY"}
-              </h3>
-              <p className="font-serif italic text-lg md:text-xl text-[#F5F5F0]/90 leading-relaxed font-light">
-                {isVi
-                  ? `“Biên tập không phải là dồn dập kỹ xảo hay tốc ramping điên cuồng. Nó là nghệ thuật điều tiết khoảng lặng để câu chuyện tự thân tìm thấy hơi thở riêng biệt của nó.”`
-                  : `“Editing is not about aggressive technical ramping. It is the careful regulation of silence so the stories can find their own organic breath.”`}
-              </p>
-            </div>
+
 
           </div>
 
@@ -434,7 +422,7 @@ export default function Works({ projects, language, selectedProjectId, setSelect
   const localizedAll = language === "vi" ? "TẤT CẢ" : "ALL";
 
   return (
-    <section className="relative min-h-screen py-16 px-6 md:px-12 lg:px-24 max-w-7xl mx-auto z-20 font-sans text-left">
+    <section className="relative min-h-screen py-16 px-6 md:px-12 max-w-7xl mx-auto z-20 font-sans text-left">
       
       {/* Dynamic Header Block with Subtitles */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-end border-b border-white/10 pb-6 mb-12 gap-6">

@@ -49,7 +49,7 @@ export default function Header({
   ];
 
   const headerBgClass = scrolled
-    ? "bg-[#0D0D0D]/85 border-b border-paper/15 backdrop-blur-md py-4 md:py-4.5 shadow-xl"
+    ? "bg-[#0A0314]/85 border-b border-paper/15 backdrop-blur-md py-4 md:py-4.5 shadow-xl"
     : "bg-transparent border-b border-transparent py-5 md:py-6";
 
   return (

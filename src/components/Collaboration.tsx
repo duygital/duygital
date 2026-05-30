@@ -498,7 +498,7 @@ export default function Collaboration({
   const dict = contentLocal[language];
 
   return (
-    <section className="relative min-h-screen py-20 px-6 md:px-12 lg:px-16 max-w-7xl mx-auto z-20 font-sans text-paper">
+    <section className="relative min-h-screen py-20 px-6 md:px-12 max-w-7xl mx-auto z-20 font-sans text-paper">
       
       {/* SECTION A: INTRO STATEMENT - Editorial Frame */}
       <div className="border-b border-paper/10 pb-8 mb-20 text-left">
@@ -957,15 +957,7 @@ export default function Collaboration({
         </div>
       </div>
 
-      {/* FOOTER INTENT FRAME */}
-      <div className="mt-28 border border-paper/20 bg-paper/[0.02]/60 p-6 md:p-10 relative overflow-hidden text-left">
-        <span className="font-mono text-xs md:text-sm text-brand tracking-[0.3em] block mb-3 font-bold uppercase">
-          {language === "en" ? "STATEMENT OF INTENT" : "CAM KẾT THẨM MỸ"}
-        </span>
-        <p className="font-serif italic text-xl md:text-2xl text-paper leading-relaxed max-w-3xl font-normal">
-          &ldquo;{dict.intro.quote}&rdquo;
-        </p>
-      </div>
+
 
     </section>
   );
